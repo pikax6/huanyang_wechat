@@ -1,0 +1,158 @@
+<!-- 还阳页 - 戒断打卡 -->
+<view class="page-container" style="background: {{theme.bg}};">
+  <!-- 还阳值和等级 -->
+  <view class="yang-header card" style="background: {{theme.card}};">
+    <view class="yang-info">
+      <view class="yang-level">
+        <text class="level-icon">🔥</text>
+        <text class="level-text">Lv.{{yangLevel}} {{yangName}}</text>
+      </view>
+      <text class="yang-value">{{yangValue}}</text>
+    </view>
+    <view class="yang-progress">
+      <view class="progress-bar">
+        <view class="progress-fill" style="width: {{yangProgress}}%; background: {{theme.primary}};"></view>
+      </view>
+      <text class="progress-text">距下一级还差 {{yangNextNeed}} 还阳值</text>
+    </view>
+  </view>
+
+  <!-- 进行中的戒断计划 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">进行中的还阳计划</text>
+      <view class="add-btn" bindtap="showAddPlan" style="background: {{theme.primary}};">+ 新增</view>
+    </view>
+
+    <view wx:if="{{plans.length > 0}}" class="plan-list">
+      <view class="plan-card card" wx:for="{{plans}}" wx:key="id" style="background: {{theme.card}};">
+        <view class="plan-top">
+          <view class="plan-icon" style="background: {{item.iconBg}};">{{item.icon}}</view>
+          <view class="plan-info">
+            <text class="plan-name">{{item.name}}</text>
+            <text class="plan-category">{{item.categoryText}}</text>
+          </view>
+          <view class="plan-streak" style="color: {{theme.primary}};">
+            <text class="streak-num">{{item.streak}}</text>
+            <text class="streak-label">天</text>
+          </view>
+        </view>
+
+        <view class="plan-progress">
+          <view class="progress-bar">
+            <view class="progress-fill" style="width: {{item.progressPercent}}%; background: {{theme.primary}};"></view>
+          </view>
+          <text class="plan-days">{{item.streak}}/{{item.targetDays}}天</text>
+        </view>
+
+        <!-- 情绪联动洞察 -->
+        <view class="plan-insight" wx:if="{{item.insight}}" style="background: {{theme.primary}}11;">
+          <text class="insight-icon">💡</text>
+          <text class="insight-text">{{item.insight}}</text>
+        </view>
+
+        <!-- 今日打卡按钮 -->
+        <view class="plan-action">
+          <view class="checkin-btn {{item.todayDone ? 'done' : ''}}" 
+                bindtap="checkinPlan" data-index="{{index}}"
+                style="background: {{item.todayDone ? theme.border : theme.primary}}; color: {{item.todayDone ? theme.textSecondary : '#fff'}};">
+            {{item.todayDone ? '✅ 今日已打卡' : '打卡'}}
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:else class="empty-state card" style="background: {{theme.card}};">
+      <text class="empty-emoji">🎯</text>
+      <text class="empty-text">还没有还阳计划</text>
+      <text class="empty-hint">点击右上角「新增」开始你的第一个还阳计划</text>
+    </view>
+  </view>
+
+  <!-- 场景急救包 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">🛡️ 场景急救包</text>
+    </view>
+    <view class="rescue-list">
+      <view class="rescue-card" wx:for="{{rescueList}}" wx:key="id" 
+            bindtap="openRescue" data-id="{{item.id}}"
+            style="background: {{theme.card}};">
+        <view class="rescue-icon">{{item.icon}}</view>
+        <view class="rescue-info">
+          <text class="rescue-name">{{item.name}}</text>
+          <text class="rescue-desc">{{item.desc}}</text>
+        </view>
+        <text class="rescue-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="bottom-space"></view>
+</view>
+
+<!-- 新增戒断计划弹窗 -->
+<view class="modal-mask {{showModal ? 'show' : ''}}" bindtap="closeModal">
+  <view class="modal-content" catchtap="noop" style="background: {{theme.card}};">
+    <view class="modal-title">新增还阳计划</view>
+    
+    <!-- 选择坏习惯类别 -->
+    <view class="modal-section" wx:if="{{modalStep === 1}}">
+      <text class="modal-label">选择要戒掉的坏习惯</text>
+      <view class="habit-grid">
+        <view class="habit-item {{selectedHabit === item.id ? 'selected' : ''}}" 
+              wx:for="{{habitOptions}}" wx:key="id"
+              bindtap="selectHabit" data-id="{{item.id}}"
+              style="background: {{selectedHabit === item.id ? theme.primary + '22' : 'transparent'}}; border-color: {{selectedHabit === item.id ? theme.primary : theme.border}};">
+          <text class="habit-icon">{{item.icon}}</text>
+          <text class="habit-name">{{item.name}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 选择戒断模式 -->
+    <view class="modal-section" wx:if="{{modalStep === 2}}">
+      <text class="modal-label">选择戒断模式</text>
+      <view class="mode-list">
+        <view class="mode-item {{selectedMode === 'gradual' ? 'selected' : ''}}" 
+              bindtap="selectMode" data-mode="gradual"
+              style="border-color: {{selectedMode === 'gradual' ? theme.primary : theme.border}};">
+          <text class="mode-icon">📗</text>
+          <view class="mode-info">
+            <text class="mode-name">渐进式（推荐）</text>
+            <text class="mode-desc">循序渐进，每周调整目标</text>
+          </view>
+        </view>
+        <view class="mode-item {{selectedMode === 'strict' ? 'selected' : ''}}" 
+              bindtap="selectMode" data-mode="strict"
+              style="border-color: {{selectedMode === 'strict' ? theme.primary : theme.border}};">
+          <text class="mode-icon">📕</text>
+          <view class="mode-info">
+            <text class="mode-name">一刀切</text>
+            <text class="mode-desc">从今天起严格执行</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 设置目标天数 -->
+    <view class="modal-section" wx:if="{{modalStep === 3}}">
+      <text class="modal-label">目标天数</text>
+      <view class="day-options">
+        <view class="day-item {{selectedDays === item ? 'selected' : ''}}" 
+              wx:for="{{dayOptions}}" wx:key="*this"
+              bindtap="selectDays" data-days="{{item}}"
+              style="background: {{selectedDays === item ? theme.primary : 'transparent'}}; color: {{selectedDays === item ? '#fff' : theme.textPrimary}}; border-color: {{selectedDays === item ? theme.primary : theme.border}};">
+          {{item}}天
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部按钮 -->
+    <view class="modal-actions">
+      <view class="modal-btn cancel" bindtap="closeModal" style="color: {{theme.textSecondary}};">取消</view>
+      <view wx:if="{{modalStep > 1}}" class="modal-btn prev" bindtap="prevStep" style="color: {{theme.primary}};">上一步</view>
+      <view class="modal-btn next" bindtap="nextStep" style="background: {{theme.primary}};">{{modalStep < 3 ? '下一步' : '开始还阳'}}</view>
+    </view>
+  </view>
+</view>

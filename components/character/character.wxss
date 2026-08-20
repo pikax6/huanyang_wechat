@@ -1,0 +1,2161 @@
+/* 虚拟小人组件样式 - 增强动画版 */
+.character-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  padding: 20rpx 0;
+}
+
+/* 对话气泡 */
+.bubble {
+  background: #FFFFFF;
+  border-radius: 24rpx 24rpx 24rpx 8rpx;
+  padding: 20rpx 28rpx;
+  font-size: 26rpx;
+  color: #3A3A3A;
+  box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.08);
+  max-width: 500rpx;
+  margin-bottom: 24rpx;
+  position: relative;
+  opacity: 0;
+  transform: translateY(10rpx) scale(0.9);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.bubble.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.bubble-tail {
+  position: absolute;
+  bottom: -12rpx;
+  left: 40rpx;
+  width: 0;
+  height: 0;
+  border-left: 12rpx solid transparent;
+  border-right: 12rpx solid transparent;
+  border-top: 16rpx solid #FFFFFF;
+}
+
+/* === 小人主体 === */
+.char-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  /* 呼吸动画 + 摇摆动画叠加 */
+  animation: charBreathe 3s ease-in-out infinite,
+             charSway 6s ease-in-out infinite;
+}
+
+/* 呼吸动画 */
+@keyframes charBreathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+
+/* 摇摆动画 */
+@keyframes charSway {
+  0%, 100% { transform: rotate(-1deg); }
+  25% { transform: rotate(1deg); }
+  50% { transform: rotate(-1deg); }
+  75% { transform: rotate(0.5deg); }
+}
+
+/* === 头部 === */
+.head {
+  width: 180rpx;
+  height: 180rpx;
+  border-radius: 50%;
+  position: relative;
+  z-index: 2;
+  transition: background 0.5s ease;
+  box-shadow: inset -8rpx -8rpx 20rpx rgba(0,0,0,0.05);
+  overflow: visible;
+  /* 头部独立呼吸 */
+  animation: headBob 4s ease-in-out infinite;
+}
+
+@keyframes headBob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  30% { transform: translateY(-3rpx) rotate(1deg); }
+  60% { transform: translateY(0) rotate(-1deg); }
+}
+
+/* 头发 */
+.hair {
+  position: absolute;
+  top: -8rpx;
+  left: 20rpx;
+  width: 140rpx;
+  height: 60rpx;
+  background: #4A3728;
+  border-radius: 70rpx 70rpx 10rpx 10rpx;
+  z-index: 1;
+  /* 头发轻微飘动 */
+  animation: hairSway 5s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+@keyframes hairSway {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(2deg); }
+}
+
+/* === 眼睛 === */
+.eyes {
+  position: absolute;
+  top: 70rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 38rpx;
+  z-index: 2;
+}
+
+.eye {
+  width: 30rpx;
+  height: 36rpx;
+  background: linear-gradient(180deg, #3D2B1F 0%, #1A0F0A 100%);
+  border-radius: 50% 50% 48% 48%;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow:
+    inset 0 -4rpx 6rpx rgba(0,0,0,0.35),
+    inset 0 3rpx 4rpx rgba(255,255,255,0.08);
+  /* 眨眼动画 - 每4秒眨一次 */
+  animation: blink 4s ease-in-out infinite;
+}
+
+.eye-right {
+  animation-delay: 0.1s;
+}
+
+@keyframes blink {
+  0%, 90%, 100% { height: 36rpx; }
+  93% { height: 4rpx; }
+  96% { height: 36rpx; }
+}
+
+.pupil {
+  width: 76%;
+  height: 76%;
+  position: absolute;
+  top: 12%;
+  left: 12%;
+  background: radial-gradient(circle at 35% 30%, #6B4226 0%, #3D2B1F 50%, #1A0F0A 100%);
+  border-radius: 50%;
+}
+
+/* 常驻主高光（始终显示） */
+.eye::before {
+  content: '';
+  position: absolute;
+  top: 5rpx;
+  right: 5rpx;
+  width: 10rpx;
+  height: 10rpx;
+  background: radial-gradient(circle at 30% 30%, #FFFFFF 0%, rgba(255,255,255,0.7) 50%, transparent 100%);
+  border-radius: 50%;
+  z-index: 3;
+}
+
+/* 常驻副高光（小亮点） */
+.eye::after {
+  content: '';
+  position: absolute;
+  bottom: 6rpx;
+  left: 6rpx;
+  width: 5rpx;
+  height: 5rpx;
+  background: rgba(255,255,255,0.45);
+  border-radius: 50%;
+  z-index: 3;
+}
+
+/* 精神好时的额外闪烁高光 */
+.eye-shine {
+  position: absolute;
+  top: 3rpx;
+  right: 3rpx;
+  width: 14rpx;
+  height: 14rpx;
+  background: radial-gradient(circle at 30% 30%, #FFFFFF 0%, rgba(255,255,255,0.6) 50%, transparent 100%);
+  border-radius: 50%;
+  z-index: 4;
+  animation: shinePulse 2s ease-in-out infinite;
+}
+
+@keyframes shinePulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.8); }
+}
+
+/* 眼睛状态 */
+.eyes.half-closed .eye {
+  height: 10rpx;
+  border-radius: 10rpx;
+  animation: none;
+}
+
+.eyes.sparkle .eye-shine {
+  display: block;
+  animation: sparkleAnim 1s ease-in-out infinite;
+}
+
+@keyframes sparkleAnim {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.5) rotate(45deg); }
+}
+
+.eyes.sleeping .eye {
+  height: 4rpx;
+  border-radius: 4rpx;
+  background: transparent;
+  border-top: 4rpx solid #3D2B1F;
+  animation: none;
+}
+
+.eyes.sleeping .pupil {
+  display: none;
+}
+
+/* === 黑眼圈 === */
+.dark-circles {
+  position: absolute;
+  top: 90rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 160rpx;
+  height: 30rpx;
+  border-radius: 50%;
+  z-index: 1;
+  pointer-events: none;
+  animation: darkCirclePulse 3s ease-in-out infinite;
+}
+
+@keyframes darkCirclePulse {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+.dark-circles.light {
+  background: rgba(100, 80, 120, 0.15);
+}
+
+.dark-circles.heavy {
+  background: rgba(80, 60, 100, 0.3);
+  height: 36rpx;
+}
+
+/* === 腮红 === */
+.blush {
+  position: absolute;
+  top: 100rpx;
+  width: 30rpx;
+  height: 20rpx;
+  background: rgba(255, 139, 110, 0.35);
+  border-radius: 50%;
+  z-index: 2;
+  animation: blushPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes blushPulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+.blush-left { left: 20rpx; }
+.blush-right { right: 20rpx; }
+
+/* === 嘴巴 === */
+.mouth {
+  position: absolute;
+  bottom: 36rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+.mouth-smile {
+  width: 40rpx;
+  height: 20rpx;
+  border-bottom: 4rpx solid #3A3A3A;
+  border-radius: 0 0 40rpx 40rpx;
+  animation: smileWiggle 3s ease-in-out infinite;
+}
+
+@keyframes smileWiggle {
+  0%, 100% { transform: translateX(-50%) scale(1); }
+  50% { transform: translateX(-50%) scale(1.1); }
+}
+
+.mouth-flat {
+  width: 30rpx;
+  height: 4rpx;
+  background: #3A3A3A;
+  border-radius: 2rpx;
+}
+
+.mouth-sad {
+  width: 40rpx;
+  height: 20rpx;
+  border-top: 4rpx solid #3A3A3A;
+  border-radius: 40rpx 40rpx 0 0;
+  animation: sadTremble 0.5s ease-in-out infinite;
+}
+
+@keyframes sadTremble {
+  0%, 100% { transform: translateX(-50%) rotate(0deg); }
+  25% { transform: translateX(-52%) rotate(-1deg); }
+  75% { transform: translateX(-48%) rotate(1deg); }
+}
+
+.mouth-open {
+  width: 30rpx;
+  height: 24rpx;
+  background: #3A3A3A;
+  border-radius: 50%;
+}
+
+/* === 痘痘 === */
+.pimple {
+  position: absolute;
+  width: 8rpx;
+  height: 8rpx;
+  background: #FF6B6B;
+  border-radius: 50%;
+  z-index: 3;
+  animation: pimplePulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pimplePulse {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.2); opacity: 1; }
+}
+
+.pimple-1 { top: 50rpx; right: 30rpx; }
+.pimple-2 { top: 60rpx; left: 35rpx; animation-delay: 0.3s; }
+
+/* === 身体 === */
+.body {
+  width: 140rpx;
+  margin-top: -10rpx;
+  border-radius: 30rpx 30rpx 20rpx 20rpx;
+  position: relative;
+  z-index: 1;
+  transition: all 0.4s ease;
+}
+
+.body-normal {
+  height: 120rpx;
+  background: var(--color-primary, #7EC8A0);
+}
+
+.body-chubby {
+  height: 140rpx;
+  width: 160rpx;
+  background: var(--color-primary, #7EC8A0);
+  border-radius: 40rpx 40rpx 24rpx 24rpx;
+}
+
+.body-fit {
+  height: 110rpx;
+  width: 130rpx;
+  background: var(--color-primary, #7EC8A0);
+}
+
+/* 穿上衣服后隐藏身体底色，避免露出绿色色块 */
+.body.has-clothing {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* 衣服 */
+.clothing {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: 100%;
+  border-radius: 30rpx 30rpx 20rpx 20rpx;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* --- 各种衣服样式（修复选择器，class直接绑定outfits.cloth id） --- */
+.cloth_hoodie {
+  background: linear-gradient(180deg, #5DADE2 0%, #3498DB 60%, #2E86C1 100%);
+  width: 156rpx;
+  height: 136rpx;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 28rpx 28rpx 18rpx 18rpx;
+  box-shadow:
+    inset 0 -10rpx 0 rgba(0,0,0,0.12),
+    inset 0 4rpx 8rpx rgba(255,255,255,0.2);
+}
+.cloth_hoodie::before {
+  /* 连帽领口 */
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70rpx;
+  height: 34rpx;
+  background: linear-gradient(180deg, #2874A6 0%, #21618C 100%);
+  border-radius: 0 0 40rpx 40rpx;
+  z-index: 2;
+  box-shadow: inset 0 -2rpx 4rpx rgba(0,0,0,0.2);
+}
+.cloth_hoodie::after {
+  /* 袋鼠兜 */
+  content: '';
+  position: absolute;
+  bottom: 18%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70rpx;
+  height: 40rpx;
+  background: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(0,0,0,0.06) 100%);
+  border-radius: 8rpx 8rpx 20rpx 20rpx;
+  border-top: 2rpx solid rgba(255,255,255,0.15);
+}
+
+.cloth_suit {
+  background: linear-gradient(180deg, #5D6D7E 0%, #34495E 50%, #2C3E50 100%);
+  width: 152rpx;
+  height: 128rpx;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 12rpx 12rpx 14rpx 14rpx;
+  box-shadow:
+    inset 0 -8rpx 0 rgba(0,0,0,0.18),
+    0 2rpx 4rpx rgba(0,0,0,0.1);
+}
+.cloth_suit::before {
+  /* 西装翻领 + 白衬衫组合 */
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 30rpx solid transparent;
+  border-right: 30rpx solid transparent;
+  border-top: 56rpx solid #FFFFFF;
+  z-index: 2;
+}
+.cloth_suit::after {
+  /* 红色领带 */
+  content: '';
+  position: absolute;
+  top: 10rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 7rpx solid transparent;
+  border-right: 7rpx solid transparent;
+  border-top: 52rpx solid #E74C3C;
+  z-index: 3;
+  filter: drop-shadow(0 1rpx 1rpx rgba(0,0,0,0.2));
+}
+
+.cloth_pajama {
+  background: repeating-linear-gradient(
+    45deg,
+    #FDEDEC,
+    #FDEDEC 12rpx,
+    #FADBD8 12rpx,
+    #FADBD8 24rpx
+  );
+  width: 160rpx;
+  height: 132rpx;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 28rpx 28rpx 20rpx 20rpx;
+  box-shadow:
+    inset 0 -6rpx 0 rgba(0,0,0,0.06),
+    inset 0 3rpx 6rpx rgba(255,255,255,0.4);
+}
+.cloth_pajama::before {
+  /* 睡衣翻领 */
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80rpx;
+  height: 28rpx;
+  background: linear-gradient(180deg, #F5B7B1 0%, #F1948A 100%);
+  border-radius: 0 0 40rpx 40rpx;
+  z-index: 2;
+}
+.cloth_pajama::after {
+  /* 胸口卡通图案 */
+  content: '🐑';
+  position: absolute;
+  top: 38rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 36rpx;
+  z-index: 3;
+  filter: drop-shadow(0 1rpx 2rpx rgba(0,0,0,0.1));
+}
+
+.cloth_sport {
+  background: linear-gradient(180deg, #2ECC71 0%, #27AE60 50%, #1E8449 100%);
+  width: 152rpx;
+  height: 126rpx;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 20rpx 20rpx 16rpx 16rpx;
+  box-shadow:
+    inset 0 -8rpx 0 rgba(0,0,0,0.15),
+    inset 0 3rpx 6rpx rgba(255,255,255,0.2);
+}
+.cloth_sport::before {
+  /* 肩部白色条纹 */
+  content: '';
+  position: absolute;
+  top: 14rpx;
+  left: -6rpx;
+  right: -6rpx;
+  height: 20rpx;
+  background:
+    linear-gradient(90deg,
+      transparent 10%, rgba(255,255,255,0.85) 10%, rgba(255,255,255,0.85) 18%,
+      transparent 18%, transparent 82%,
+      rgba(255,255,255,0.85) 82%, rgba(255,255,255,0.85) 90%, transparent 90%
+    );
+  border-radius: 4rpx;
+}
+.cloth_sport::after {
+  /* 品牌对勾logo */
+  content: '';
+  position: absolute;
+  top: 52rpx;
+  left: 50%;
+  transform: translateX(-50%) scaleX(-1) rotate(-20deg);
+  width: 40rpx;
+  height: 20rpx;
+  border-right: 5rpx solid #FFFFFF;
+  border-bottom: 5rpx solid #FFFFFF;
+  border-radius: 0 0 40rpx 0;
+  filter: drop-shadow(0 1rpx 2rpx rgba(0,0,0,0.15));
+}
+
+.cloth_superhero {
+  background: linear-gradient(180deg, #E74C3C 0%, #C0392B 55%, #922B21 100%);
+  width: 146rpx;
+  height: 142rpx;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 14rpx 14rpx 16rpx 16rpx;
+  box-shadow:
+    /* 披风左右 */
+    36rpx 24rpx 0 -10rpx rgba(146, 43, 33, 0.7),
+    -36rpx 24rpx 0 -10rpx rgba(146, 43, 33, 0.7),
+    inset 0 -10rpx 0 rgba(0,0,0,0.2),
+    inset 0 4rpx 8rpx rgba(255,255,255,0.15);
+}
+.cloth_superhero::before {
+  /* 胸口徽章 - 黄底 */
+  content: '';
+  position: absolute;
+  top: 22rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 52rpx;
+  height: 52rpx;
+  background: radial-gradient(circle at 35% 35%, #F9E79F, #F1C40F 60%, #D4AC0D 100%);
+  border-radius: 50%;
+  z-index: 2;
+  box-shadow:
+    inset -4rpx -4rpx 8rpx rgba(0,0,0,0.2),
+    0 2rpx 4rpx rgba(0,0,0,0.2);
+}
+.cloth_superhero::after {
+  /* 闪电图标 */
+  content: '⚡';
+  position: absolute;
+  top: 26rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 34rpx;
+  z-index: 3;
+  filter: drop-shadow(0 1rpx 2rpx rgba(0,0,0,0.3));
+}
+
+.cloth_kimono {
+  background: linear-gradient(180deg, #F9E79F 0%, #F7DC6F 30%, #F39C12 100%);
+  width: 172rpx;
+  height: 144rpx;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 10rpx 10rpx 20rpx 20rpx;
+  box-shadow:
+    inset 0 -10rpx 0 rgba(0,0,0,0.12),
+    inset 0 3rpx 6rpx rgba(255,255,255,0.3);
+}
+.cloth_kimono::before {
+  /* 交叠领口 + 腰带 */
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 40rpx solid rgba(211, 84, 0, 0.35);
+  border-right: 40rpx solid rgba(211, 84, 0, 0.35);
+  border-top: 48rpx solid transparent;
+  z-index: 2;
+}
+.cloth_kimono::after {
+  /* 樱花装饰 + 宽腰带组合 */
+  content: '🌸';
+  position: absolute;
+  top: 58rpx;
+  right: 22rpx;
+  font-size: 32rpx;
+  z-index: 3;
+  filter: drop-shadow(0 1rpx 2rpx rgba(0,0,0,0.15));
+}
+/* 和服额外：宽腰带 obi */
+.cloth_kimono {
+  /* 覆盖宽腰带用 background-image 叠加 */
+  background-image:
+    linear-gradient(180deg,
+      transparent 55%,
+      rgba(192, 57, 43, 0.85) 55%,
+      rgba(192, 57, 43, 0.9) 72%,
+      transparent 72%
+    ),
+    linear-gradient(180deg, #F9E79F 0%, #F7DC6F 30%, #F39C12 100%);
+}
+
+.cloth_rainbow {
+  background: linear-gradient(
+    180deg,
+    #FF6B6B 0%, #FF6B6B 14%,
+    #FFD93D 14%, #FFD93D 28%,
+    #6BCB77 28%, #6BCB77 42%,
+    #4D96FF 42%, #4D96FF 56%,
+    #9B59B6 56%, #9B59B6 70%,
+    #FF6B6B 70%, #FF6B6B 100%
+  );
+  width: 156rpx;
+  height: 134rpx;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 24rpx 24rpx 16rpx 16rpx;
+  box-shadow:
+    inset 0 -8rpx 0 rgba(0,0,0,0.1),
+    inset 0 4rpx 8rpx rgba(255,255,255,0.25),
+    0 0 20rpx rgba(155, 89, 182, 0.25);
+  animation: rainbowGlow 4s ease-in-out infinite;
+}
+@keyframes rainbowGlow {
+  0%, 100% { filter: saturate(1); }
+  50% { filter: saturate(1.2) brightness(1.05); }
+}
+.cloth_rainbow::before {
+  /* 领口白色边 */
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 74rpx;
+  height: 28rpx;
+  background: rgba(255,255,255,0.9);
+  border-radius: 0 0 40rpx 40rpx;
+  z-index: 2;
+}
+.cloth_rainbow::after {
+  /* 中心小爱心 */
+  content: '❤️';
+  position: absolute;
+  top: 48rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 28rpx;
+  z-index: 3;
+  animation: heartBeat 1.2s ease-in-out infinite;
+}
+@keyframes heartBeat {
+  0%, 100% { transform: translateX(-50%) scale(1); }
+  50% { transform: translateX(-50%) scale(1.15); }
+}
+
+/* === 手臂 === */
+.arm {
+  position: absolute;
+  top: 20rpx;
+  width: 24rpx;
+  height: 70rpx;
+  background: var(--color-primary, #7EC8A0);
+  border-radius: 12rpx;
+  transition: all 0.3s ease;
+  animation: armSway 4s ease-in-out infinite;
+  transform-origin: top center;
+}
+
+.arm-left { left: -20rpx; animation-delay: 0.2s; }
+.arm-right { right: -20rpx; }
+
+@keyframes armSway {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(3deg); }
+}
+
+/* 姿态 */
+.arm.slump {
+  transform: rotate(15deg);
+  top: 30rpx;
+  animation: none;
+}
+
+.arm.energetic {
+  transform: rotate(-10deg);
+  top: 10rpx;
+  animation: armFlex 1s ease-in-out infinite;
+}
+
+@keyframes armFlex {
+  0%, 100% { transform: rotate(-10deg); }
+  50% { transform: rotate(-20deg); }
+}
+
+/* === 腿 === */
+.legs {
+  display: flex;
+  gap: 20rpx;
+  margin-top: -5rpx;
+  z-index: 1;
+}
+
+.leg {
+  width: 30rpx;
+  height: 40rpx;
+  background: #E8C4A0;
+  border-radius: 8rpx 8rpx 12rpx 12rpx;
+}
+
+/* === 鞋子 === */
+.shoes {
+  position: absolute;
+  bottom: -28rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100rpx;
+  height: 24rpx;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.shoes_sneakers {
+  width: 110rpx;
+  height: 28rpx;
+}
+.shoes_sneakers::before,
+.shoes_sneakers::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  width: 44rpx;
+  height: 26rpx;
+  background: linear-gradient(180deg, #FFFFFF 0%, #F2F3F4 100%);
+  border: 3rpx solid #85929E;
+  border-radius: 8rpx 20rpx 6rpx 10rpx;
+  box-shadow: inset 0 -4rpx 0 #F1C40F;
+}
+.shoes_sneakers::before { left: 2rpx; }
+.shoes_sneakers::after { right: 2rpx; transform: scaleX(-1); }
+
+.shoes_boots {
+  width: 110rpx;
+  height: 50rpx;
+  bottom: -50rpx;
+}
+.shoes_boots::before,
+.shoes_boots::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  width: 40rpx;
+  height: 52rpx;
+  background: linear-gradient(180deg, #784212 0%, #3E2723 100%);
+  border: 3rpx solid #2C1810;
+  border-radius: 6rpx 10rpx 6rpx 8rpx;
+  box-shadow: inset 0 0 0 3rpx rgba(255,255,255,0.1);
+}
+.shoes_boots::before { left: 6rpx; }
+.shoes_boots::after { right: 6rpx; }
+.shoes_boots::after {
+  /* 鞋带装饰 */
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 6rpx,
+    rgba(255,255,255,0.15) 6rpx,
+    rgba(255,255,255,0.15) 8rpx
+  ), linear-gradient(180deg, #784212 0%, #3E2723 100%);
+}
+
+.shoes_slippers {
+  width: 110rpx;
+  height: 20rpx;
+  bottom: -24rpx;
+}
+.shoes_slippers::before,
+.shoes_slippers::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  width: 44rpx;
+  height: 18rpx;
+  background: linear-gradient(180deg, #F1948A 0%, #E74C3C 100%);
+  border-radius: 20rpx 20rpx 8rpx 8rpx;
+  box-shadow: 0 2rpx 0 rgba(0,0,0,0.15);
+}
+.shoes_slippers::before { left: 2rpx; }
+.shoes_slippers::after { right: 2rpx; }
+
+.shoes_heels {
+  width: 110rpx;
+  height: 40rpx;
+  bottom: -40rpx;
+}
+.shoes_heels::before,
+.shoes_heels::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  width: 46rpx;
+  height: 18rpx;
+  background: linear-gradient(180deg, #C0392B 0%, #922B21 100%);
+  border-radius: 4rpx 30rpx 4rpx 6rpx;
+}
+.shoes_heels::before { left: 0; }
+.shoes_heels::after { right: 0; transform: scaleX(-1); }
+.shoes_heels::before {
+  /* 鞋跟 */
+  box-shadow:
+    36rpx 6rpx 0 -4rpx #641E16,
+    36rpx 14rpx 0 -4rpx #641E16;
+}
+.shoes_heels::after {
+  box-shadow:
+    -36rpx 6rpx 0 -4rpx #641E16,
+    -36rpx 14rpx 0 -4rpx #641E16;
+}
+
+.shoes_flats {
+  width: 110rpx;
+  height: 18rpx;
+  bottom: -22rpx;
+}
+.shoes_flats::before,
+.shoes_flats::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  width: 44rpx;
+  height: 16rpx;
+  background: linear-gradient(180deg, #D5DBDB 0%, #AAB7B8 100%);
+  border-radius: 6rpx 22rpx 6rpx 8rpx;
+  box-shadow: 0 2rpx 0 rgba(0,0,0,0.12);
+  border: 2rpx solid #85929E;
+}
+.shoes_flats::before { left: 2rpx; }
+.shoes_flats::after { right: 2rpx; transform: scaleX(-1); }
+.shoes_flats::before {
+  background-image:
+    radial-gradient(circle at 30% 30%, #E74C3C 4rpx, transparent 5rpx),
+    linear-gradient(180deg, #D5DBDB 0%, #AAB7B8 100%);
+}
+
+.shoes_sandals {
+  width: 110rpx;
+  height: 22rpx;
+  bottom: -26rpx;
+}
+.shoes_sandals::before,
+.shoes_sandals::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  width: 44rpx;
+  height: 10rpx;
+  background: linear-gradient(180deg, #8E44AD 0%, #6C3483 100%);
+  border-radius: 8rpx 22rpx 4rpx 6rpx;
+  box-shadow: 0 3rpx 0 rgba(0,0,0,0.15);
+}
+.shoes_sandals::before { left: 2rpx; }
+.shoes_sandals::after { right: 2rpx; transform: scaleX(-1); }
+.shoes_sandals::before {
+  background-image:
+    linear-gradient(90deg, #8E44AD 0%, #8E44AD 6rpx, transparent 6rpx),
+    linear-gradient(180deg, #8E44AD 0%, #6C3483 100%);
+}
+
+/* === 装饰：帽子 === */
+.hat {
+  position: absolute;
+  top: -30rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120rpx;
+  height: 50rpx;
+  background: #FF8B6E;
+  border-radius: 60rpx 60rpx 10rpx 10rpx;
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* --- 各种帽子样式（class = outfits.hat 的id） --- */
+
+/* 棒球帽：还原真实结构 - 6片拼接帽身+前帽檐+透气孔+logo+调节带 */
+.hat_cap {
+  width: 150rpx;
+  height: 62rpx;
+  top: -34rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  background:
+    /* 拼接缝线 */
+    linear-gradient(90deg,
+      transparent 0%, transparent 16%,
+      rgba(0,0,0,0.12) 16%, rgba(0,0,0,0.12) 16.8%,
+      transparent 16.8%, transparent 33%,
+      rgba(0,0,0,0.12) 33%, rgba(0,0,0,0.12) 33.8%,
+      transparent 33.8%, transparent 50%,
+      rgba(0,0,0,0.12) 50%, rgba(0,0,0,0.12) 50.8%,
+      transparent 50.8%, transparent 67%,
+      rgba(0,0,0,0.12) 67%, rgba(0,0,0,0.12) 67.8%,
+      transparent 67.8%, transparent 84%,
+      rgba(0,0,0,0.12) 84%, rgba(0,0,0,0.12) 84.8%,
+      transparent 84.8%
+    ),
+    linear-gradient(180deg, #34495E 0%, #2C3E50 50%, #1A252F 100%);
+  border-radius: 50% 50% 10rpx 10rpx / 80% 80% 10rpx 10rpx;
+  box-shadow:
+    inset 0 -8rpx 12rpx rgba(0,0,0,0.3),
+    inset 0 4rpx 8rpx rgba(255,255,255,0.1),
+    0 2rpx 6rpx rgba(0,0,0,0.2);
+}
+.hat_cap::before {
+  /* 前帽檐 - 弧度弯曲效果 */
+  content: '';
+  position: absolute;
+  top: 48rpx;
+  left: -18rpx;
+  right: -18rpx;
+  height: 18rpx;
+  background:
+    linear-gradient(180deg,
+      #2C3E50 0%,
+      #1A252F 40%,
+      #0D1117 100%
+    );
+  border-radius: 50% 50% 12rpx 12rpx / 60% 60% 12rpx 12rpx;
+  box-shadow:
+    0 4rpx 10rpx rgba(0,0,0,0.3),
+    inset 0 -2rpx 4rpx rgba(0,0,0,0.4),
+    inset 0 2rpx 4rpx rgba(255,255,255,0.08);
+}
+.hat_cap::after {
+  /* 正面logo + 透气孔组合 */
+  content: 'NY';
+  position: absolute;
+  top: 14rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 22rpx;
+  font-weight: 900;
+  color: #FFFFFF;
+  letter-spacing: -1rpx;
+  text-shadow: 0 1rpx 2rpx rgba(0,0,0,0.4);
+  z-index: 2;
+}
+/* 棒球帽透气孔 - 左右两侧 */
+.hat_cap {
+  /* 用 background 叠加两个小圆点 */
+  background-image:
+    radial-gradient(circle at 28% 30%, rgba(255,255,255,0.4) 3rpx, transparent 4rpx),
+    radial-gradient(circle at 72% 30%, rgba(255,255,255,0.4) 3rpx, transparent 4rpx),
+    linear-gradient(90deg,
+      transparent 0%, transparent 16%,
+      rgba(0,0,0,0.12) 16%, rgba(0,0,0,0.12) 16.8%,
+      transparent 16.8%, transparent 33%,
+      rgba(0,0,0,0.12) 33%, rgba(0,0,0,0.12) 33.8%,
+      transparent 33.8%, transparent 50%,
+      rgba(0,0,0,0.12) 50%, rgba(0,0,0,0.12) 50.8%,
+      transparent 50.8%, transparent 67%,
+      rgba(0,0,0,0.12) 67%, rgba(0,0,0,0.12) 67.8%,
+      transparent 67.8%, transparent 84%,
+      rgba(0,0,0,0.12) 84%, rgba(0,0,0,0.12) 84.8%,
+      transparent 84.8%
+    ),
+    linear-gradient(180deg, #34495E 0%, #2C3E50 50%, #1A252F 100%);
+}
+
+/* 毛线帽：还原针织纹理+卷边翻折+大毛球+帽子下垂感 */
+.hat_beanie {
+  width: 140rpx;
+  height: 90rpx;
+  top: -62rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  background:
+    /* 针织横向纹理 */
+    repeating-linear-gradient(
+      0deg,
+      transparent 0rpx,
+      transparent 4rpx,
+      rgba(255,255,255,0.08) 4rpx,
+      rgba(255,255,255,0.08) 5rpx,
+      transparent 5rpx,
+      transparent 9rpx,
+      rgba(0,0,0,0.06) 9rpx,
+      rgba(0,0,0,0.06) 10rpx
+    ),
+    /* 针织V字纹理叠加 */
+    repeating-linear-gradient(
+      45deg,
+      transparent 0rpx,
+      transparent 6rpx,
+      rgba(255,255,255,0.05) 6rpx,
+      rgba(255,255,255,0.05) 7rpx
+    ),
+    linear-gradient(180deg,
+      #BB8FCE 0%,
+      #AF7AC5 25%,
+      #9B59B6 55%,
+      #8E44AD 100%
+    );
+  border-radius: 48% 48% 22% 22% / 65% 65% 28% 28%;
+  box-shadow:
+    inset 0 -12rpx 16rpx rgba(0,0,0,0.18),
+    inset 0 6rpx 12rpx rgba(255,255,255,0.15),
+    0 3rpx 8rpx rgba(0,0,0,0.18);
+}
+.hat_beanie::before {
+  /* 卷边翻折 - 双层厚实感 */
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 112%;
+  height: 26rpx;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0rpx, transparent 3rpx,
+      rgba(255,255,255,0.1) 3rpx, rgba(255,255,255,0.1) 4rpx
+    ),
+    linear-gradient(180deg,
+      #8E44AD 0%,
+      #7D3C98 40%,
+      #6C3483 100%
+    );
+  border-radius: 6rpx 6rpx 16rpx 16rpx;
+  border-top: 4rpx solid rgba(255,255,255,0.25);
+  box-shadow:
+    inset 0 3rpx 6rpx rgba(255,255,255,0.2),
+    inset 0 -3rpx 6rpx rgba(0,0,0,0.15),
+    0 2rpx 4rpx rgba(0,0,0,0.15);
+}
+.hat_beanie::after {
+  /* 顶部大毛球 - 蓬松质感 */
+  content: '';
+  position: absolute;
+  top: -30rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 42rpx;
+  height: 42rpx;
+  background:
+    radial-gradient(circle at 35% 30%,
+      #FF8A80 0%,
+      #E74C3C 40%,
+      #C0392B 80%
+    );
+  border-radius: 50%;
+  box-shadow:
+    /* 毛球毛刺效果 - 多层阴影叠加 */
+    -6rpx -4rpx 0 -4rpx rgba(231, 76, 60, 0.7),
+     6rpx -3rpx 0 -4rpx rgba(231, 76, 60, 0.7),
+    -5rpx  5rpx 0 -4rpx rgba(231, 76, 60, 0.7),
+     5rpx  5rpx 0 -4rpx rgba(231, 76, 60, 0.6),
+    -8rpx  0   0 -5rpx rgba(231, 76, 60, 0.5),
+     8rpx  0   0 -5rpx rgba(231, 76, 60, 0.5),
+     0   -8rpx 0 -5rpx rgba(231, 76, 60, 0.6),
+     0    8rpx 0 -5rpx rgba(231, 76, 60, 0.5),
+    inset -6rpx -6rpx 10rpx rgba(0,0,0,0.25),
+    inset  4rpx  4rpx  8rpx rgba(255,255,255,0.3),
+    0 3rpx 6rpx rgba(0,0,0,0.2);
+  animation: pompomBob 2.2s ease-in-out infinite;
+}
+@keyframes pompomBob {
+  0%, 100% { transform: translateX(-50%) rotate(-6deg) scale(1); }
+  25%      { transform: translateX(-48%) rotate(3deg) scale(1.03); }
+  50%      { transform: translateX(-50%) rotate(6deg) scale(1); }
+  75%      { transform: translateX(-52%) rotate(-3deg) scale(1.03); }
+}
+
+/* 派对帽：还原锥形+多彩锯齿条纹+顶球+底部皱褶+闪亮装饰 */
+.hat_party {
+  width: 100rpx;
+  height: 110rpx;
+  background: transparent;
+  top: -110rpx;
+  left: 52%;
+  transform: rotate(8deg) translateX(-50%);
+  z-index: 10;
+}
+.hat_party::before {
+  /* 锥形帽身 - 锯齿条纹 + 渐变高光 */
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100rpx;
+  height: 110rpx;
+  background:
+    /* 斜向高光条 */
+    linear-gradient(100deg,
+      transparent 0%, transparent 45%,
+      rgba(255,255,255,0.35) 45%, rgba(255,255,255,0.35) 52%,
+      transparent 52%
+    ),
+    /* 彩色锯齿条纹（V形） */
+    repeating-linear-gradient(
+      180deg,
+      #FF6B6B 0rpx, #FF6B6B 18rpx,
+      #FFD93D 18rpx, #FFD93D 36rpx,
+      #6BCB77 36rpx, #6BCB77 54rpx,
+      #4D96FF 54rpx, #4D96FF 72rpx,
+      #C77DFF 72rpx, #C77DFF 90rpx,
+      #FF6B6B 90rpx, #FF6B6B 108rpx
+    );
+  clip-path: polygon(
+    50% 0%,
+    54% 5%, 48% 8%, 55% 12%, 47% 16%, 56% 20%, 46% 24%, 57% 28%, 45% 32%, 58% 36%,
+    44% 40%, 59% 44%, 43% 48%, 60% 52%, 42% 56%, 61% 60%, 41% 64%, 62% 68%,
+    40% 72%, 63% 76%, 39% 80%, 64% 84%, 38% 88%, 65% 92%, 37% 96%,
+    100% 100%, 0% 100%
+  );
+  filter:
+    drop-shadow(0 4rpx 8rpx rgba(0,0,0,0.2))
+    drop-shadow(0 0 12rpx rgba(255,217,61,0.25));
+}
+.hat_party::after {
+  /* 顶部彩球 + 星星闪片 */
+  content: '✨';
+  position: absolute;
+  top: -20rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32rpx;
+  height: 32rpx;
+  line-height: 32rpx;
+  text-align: center;
+  font-size: 20rpx;
+  background:
+    radial-gradient(circle at 32% 28%,
+      #FFF3A0 0%,
+      #FFE66D 35%,
+      #FF6B6B 100%
+    );
+  border-radius: 50%;
+  box-shadow:
+    -4rpx -3rpx 0 -3rpx rgba(255,230,109,0.7),
+     4rpx -2rpx 0 -3rpx rgba(255,107,107,0.7),
+    -4rpx  4rpx 0 -3rpx rgba(255,217,61,0.7),
+     4rpx  4rpx 0 -3rpx rgba(107,203,119,0.6),
+    inset -5rpx -5rpx 10rpx rgba(0,0,0,0.2),
+    inset  3rpx  3rpx  6rpx rgba(255,255,255,0.5),
+    0 3rpx 6rpx rgba(0,0,0,0.25);
+  animation: partyBob 1.3s ease-in-out infinite;
+  z-index: 3;
+}
+@keyframes partyBob {
+  0%, 100% { transform: translateX(-50%) scale(1); filter: brightness(1); }
+  50%      { transform: translateX(-50%) scale(1.2); filter: brightness(1.2); }
+}
+/* 派对帽底部皱褶花边 */
+.hat_party {
+  /* 额外添加：底部波浪花边 - 用伪元素不够 用背景叠加模拟 */
+}
+
+/* 草帽：大帽檐 + 草帽身 + 丝带 */
+.hat_straw {
+  width: 190rpx;
+  height: 26rpx;
+  top: -24rpx;
+  background: linear-gradient(180deg, #DEB887 0%, #C69C6D 100%);
+  border-radius: 50%;
+  box-shadow: 0 4rpx 8rpx rgba(0,0,0,0.15);
+}
+.hat_straw::before {
+  /* 帽冠（顶部隆起） */
+  content: '';
+  position: absolute;
+  top: -44rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100rpx;
+  height: 58rpx;
+  background: linear-gradient(180deg, #D2B48C 0%, #B8956F 100%);
+  border-radius: 52rpx 52rpx 14rpx 14rpx;
+  box-shadow: inset 0 -4rpx 0 rgba(0,0,0,0.08);
+}
+.hat_straw::after {
+  /* 丝带 */
+  content: '';
+  position: absolute;
+  top: -8rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 106rpx;
+  height: 12rpx;
+  background: linear-gradient(90deg, #E74C3C 0%, #C0392B 100%);
+  border-radius: 2rpx;
+  box-shadow: 0 1rpx 0 rgba(0,0,0,0.1);
+}
+
+/* 小皇冠：五尖金冠 + 宝石 */
+.hat_crown {
+  background: linear-gradient(180deg, #FFD700 0%, #FFA500 100%);
+  width: 110rpx;
+  height: 60rpx;
+  top: -40rpx;
+  clip-path: polygon(0% 100%, 15% 40%, 30% 70%, 50% 0%, 70% 70%, 85% 40%, 100% 100%);
+  border-radius: 0;
+  filter: drop-shadow(0 2rpx 4rpx rgba(255,200,0,0.5));
+  animation: crownGlow 2s ease-in-out infinite;
+}
+@keyframes crownGlow {
+  0%, 100% { filter: drop-shadow(0 2rpx 4rpx rgba(255,200,0,0.5)); }
+  50% { filter: drop-shadow(0 2rpx 8rpx rgba(255,220,50,0.8)); }
+}
+.hat_crown::after {
+  content: '💎';
+  position: absolute;
+  top: 16rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 22rpx;
+}
+
+/* 学士帽：黑色方板 + 流苏 */
+.hat_graduate {
+  background: #2C3E50;
+  width: 150rpx;
+  height: 14rpx;
+  top: -18rpx;
+  border-radius: 4rpx;
+  box-shadow: 0 2rpx 4rpx rgba(0,0,0,0.25);
+}
+.hat_graduate::before {
+  /* 帽冠（立板） */
+  content: '';
+  position: absolute;
+  top: -44rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 78rpx;
+  height: 40rpx;
+  background: linear-gradient(180deg, #34495E 0%, #2C3E50 100%);
+  border-radius: 10rpx 10rpx 0 0;
+}
+.hat_graduate::after {
+  /* 流苏 */
+  content: '🎗️';
+  position: absolute;
+  top: -24rpx;
+  right: 16rpx;
+  font-size: 22rpx;
+  animation: tasselSway 2s ease-in-out infinite;
+  transform-origin: top center;
+}
+@keyframes tasselSway {
+  0%, 100% { transform: rotate(-8deg); }
+  50% { transform: rotate(8deg); }
+}
+
+/* 光环：金色双层圈 + 发光 */
+.hat_halo {
+  background: transparent;
+  width: 160rpx;
+  height: 48rpx;
+  top: -54rpx;
+  border: 6rpx solid #FFD700;
+  border-radius: 50%;
+  box-shadow:
+    0 0 24rpx rgba(255, 215, 0, 0.65),
+    inset 0 0 20rpx rgba(255, 215, 0, 0.35);
+  animation: haloPulse 2s ease-in-out infinite;
+}
+@keyframes haloPulse {
+  0%, 100% { box-shadow: 0 0 24rpx rgba(255,215,0,0.65), inset 0 0 20rpx rgba(255,215,0,0.35); }
+  50% { box-shadow: 0 0 40rpx rgba(255,215,0,0.95), inset 0 0 28rpx rgba(255,215,0,0.55); }
+}
+
+/* === 背景装饰（修复选择器，直接绑定 outfits.bg） === */
+.bg-decor {
+  position: absolute;
+  top: -100rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 440rpx;
+  height: 540rpx;
+  border-radius: 48%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* 温馨卧室：暖黄灯光 + 床铺 + 床头柜台灯 + 窗帘 + 墙上画框 */
+.bg_bedroom {
+  background:
+    /* 墙上装饰画框 */
+    linear-gradient(135deg,
+      transparent 0%, transparent 12%,
+      rgba(255,255,255,0.9) 12%, rgba(255,255,255,0.9) 13.5%,
+      rgba(187,143,206,0.7) 13.5%, rgba(187,143,206,0.7) 21%,
+      rgba(255,255,255,0.9) 21%, rgba(255,255,255,0.9) 22.5%,
+      transparent 22.5%
+    ),
+    /* 窗帘褶皱 - 右侧 */
+    linear-gradient(92deg,
+      transparent 0%, transparent 86%,
+      rgba(180,140,100,0.3) 86%, rgba(180,140,100,0.3) 88%,
+      rgba(160,110,70,0.35) 88%, rgba(160,110,70,0.35) 90%,
+      rgba(180,140,100,0.3) 90%, rgba(180,140,100,0.3) 92%,
+      rgba(160,110,70,0.35) 92%, rgba(160,110,70,0.35) 94%,
+      rgba(180,140,100,0.3) 94%, rgba(180,140,100,0.3) 100%
+    ),
+    /* 墙面上半 - 暖米色墙纸 */
+    linear-gradient(180deg,
+      #FFEFD5 0%, #FFE4B5 48%,
+      /* 墙裙分割线 */
+      rgba(180,140,100,0.4) 48%, rgba(180,140,100,0.4) 49%,
+      /* 墙面下半 - 稍暖色 */
+      #F5DEB3 49%, #DEB887 82%,
+      /* 地板木纹线 */
+      #C4A574 82%, #B8956F 100%
+    );
+  width: 460rpx;
+  height: 560rpx;
+  top: -110rpx;
+  animation: bgFloat 5.5s ease-in-out infinite;
+  box-shadow:
+    inset 0 0 80rpx rgba(255, 200, 100, 0.25),
+    inset 0 -40rpx 80rpx rgba(140, 90, 40, 0.15);
+}
+.bg_bedroom::before {
+  /* 床铺 */
+  content: '';
+  position: absolute;
+  bottom: 8%;
+  left: 12%;
+  right: 12%;
+  height: 28%;
+  background:
+    /* 被子花纹 */
+    repeating-linear-gradient(
+      135deg,
+      #F8B4B4 0rpx, #F8B4B4 12rpx,
+      #F5A0A0 12rpx, #F5A0A0 24rpx,
+      #F8B4B4 24rpx, #F8B4B4 36rpx,
+      #FFFFFF 36rpx, #FFFFFF 48rpx
+    );
+  border-radius: 10rpx 10rpx 6rpx 6rpx;
+  box-shadow:
+    0 8rpx 16rpx rgba(120, 80, 40, 0.25),
+    inset 0 -6rpx 12rpx rgba(0,0,0,0.08),
+    inset 0 4rpx 8rpx rgba(255,255,255,0.4);
+  opacity: 0.92;
+}
+.bg_bedroom::after {
+  /* 台灯 + 光晕效果 */
+  content: '';
+  position: absolute;
+  top: 18%;
+  right: 16%;
+  width: 40rpx;
+  height: 80rpx;
+  background:
+    /* 灯罩 */
+    linear-gradient(180deg, #F4D03F 0%, #F5B041 100%);
+  border-radius: 8rpx 8rpx 4rpx 4rpx;
+  clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
+  opacity: 0.95;
+  box-shadow:
+    /* 光晕 */
+    0 0 60rpx 20rpx rgba(255, 220, 100, 0.55),
+    0 0 100rpx 40rpx rgba(255, 200, 80, 0.3);
+  animation: lampGlow 3.5s ease-in-out infinite;
+}
+@keyframes lampGlow {
+  0%, 100% { filter: brightness(1); box-shadow: 0 0 60rpx 20rpx rgba(255,220,100,0.55), 0 0 100rpx 40rpx rgba(255,200,80,0.3); }
+  50%      { filter: brightness(1.12); box-shadow: 0 0 80rpx 28rpx rgba(255,220,100,0.7),  0 0 130rpx 55rpx rgba(255,200,80,0.45); }
+}
+
+/* 森林：草地渐变 + 3棵立体松树 + 太阳光晕 + 飘动白云 + 小花点缀 */
+.bg_forest {
+  background:
+    /* 远处树丛剪影 */
+    radial-gradient(ellipse 50% 20% at 18% 52%, #6AAA64 0%, transparent 70%),
+    radial-gradient(ellipse 45% 18% at 78% 48%, #58A05A 0%, transparent 72%),
+    radial-gradient(ellipse 60% 25% at 50% 56%, #7AB874 0%, transparent 68%),
+    /* 太阳光晕 */
+    radial-gradient(circle at 28% 18%,
+      rgba(255,250,200,0.95) 0%,
+      rgba(255,240,160,0.7) 10%,
+      rgba(255,220,120,0.35) 22%,
+      transparent 40%
+    ),
+    /* 天空 */
+    linear-gradient(180deg,
+      #B3E5FC 0%, #81D4FA 28%, #4FC3F7 50%,
+      /* 远景山丘 */
+      #A5D6A7 50%,
+      /* 近景草坪 */
+      #81C784 70%, #66BB6A 85%, #4CAF50 100%
+    );
+  width: 470rpx;
+  height: 570rpx;
+  top: -115rpx;
+  animation: bgFloat 6.5s ease-in-out infinite;
+  box-shadow:
+    inset 0 0 60rpx rgba(100, 200, 150, 0.2),
+    inset 0 -40rpx 80rpx rgba(60, 130, 60, 0.25);
+}
+.bg_forest::before {
+  /* 三棵松树 - 多层三角形叠加 */
+  content: '';
+  position: absolute;
+  bottom: 12%;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background:
+    /* 左边松树 */
+    linear-gradient(135deg, transparent 50%, #2E7D32 50%) 10% 80% / 18% 12% no-repeat,
+    linear-gradient(135deg, transparent 50%, #388E3C 50%) 8%  65% / 22% 15% no-repeat,
+    linear-gradient(135deg, transparent 50%, #43A047 50%) 6%  48% / 26% 18% no-repeat,
+    /* 中间松树（最高） */
+    linear-gradient(135deg, transparent 50%, #1B5E20 50%) 46% 75% / 20% 17% no-repeat,
+    linear-gradient(135deg, transparent 50%, #2E7D32 50%) 44% 55% / 24% 22% no-repeat,
+    linear-gradient(135deg, transparent 50%, #388E3C 50%) 42% 32% / 28% 26% no-repeat,
+    linear-gradient(135deg, transparent 50%, #43A047 50%) 40%  8% / 32% 30% no-repeat,
+    /* 右边松树 */
+    linear-gradient(135deg, transparent 50%, #2E7D32 50%) 76% 82% / 16% 10% no-repeat,
+    linear-gradient(135deg, transparent 50%, #388E3C 50%) 74%  68% / 20% 14% no-repeat,
+    linear-gradient(135deg, transparent 50%, #43A047 50%) 72%  52% / 24% 17% no-repeat;
+  opacity: 0.95;
+  filter: drop-shadow(2rpx 4rpx 6rpx rgba(0,80,0,0.25));
+}
+.bg_forest::after {
+  /* 云朵 + 小鸟 + 小花 */
+  content: '';
+  position: absolute;
+  top: 8%;
+  left: 0;
+  right: 0;
+  height: 45%;
+  background:
+    /* 云朵1 */
+    radial-gradient(circle 20rpx at 78% 20%, rgba(255,255,255,0.95) 0%, transparent 70%),
+    radial-gradient(circle 16rpx at 86% 22%, rgba(255,255,255,0.9) 0%, transparent 70%),
+    radial-gradient(ellipse 30rpx 14rpx at 82% 26%, rgba(255,255,255,0.92) 0%, transparent 70%),
+    /* 草坪小花 */
+    radial-gradient(circle 4rpx at 15% 92%, #FF6B6B 0%, transparent 70%),
+    radial-gradient(circle 4rpx at 32% 96%, #FFD93D 0%, transparent 70%),
+    radial-gradient(circle 4rpx at 55% 90%, #FF80AB 0%, transparent 70%),
+    radial-gradient(circle 4rpx at 70% 94%, #B388FF 0%, transparent 70%),
+    radial-gradient(circle 4rpx at 88% 88%, #69F0AE 0%, transparent 70%);
+  animation: cloudDrift 9s ease-in-out infinite;
+  opacity: 0.9;
+}
+@keyframes cloudDrift {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(20rpx); }
+}
+
+/* 海滩：天蓝海蓝 + 浪花层 + 沙滩纹理 + 立体椰子树 + 太阳光晕 + 海鸥 */
+.bg_beach {
+  background:
+    /* 远景海平面 */
+    linear-gradient(180deg,
+      /* 天空渐变 */
+      #87CEEB 0%, #81D4FA 22%, #4FC3F7 38%,
+      /* 深海 */
+      #0288D1 39%, #0277BD 44%,
+      /* 浅海渐变 */
+      #26C6DA 46%, #4DD0E1 48%, #80DEEA 50%,
+      /* 浪花白沫线 */
+      #FFFFFF 51%,
+      /* 沙滩渐变 */
+      #FFE0B2 52%, #FFCC80 62%, #FFB74D 72%,
+      #F5DEB3 78%, #DEB887 100%
+    );
+  width: 480rpx;
+  height: 580rpx;
+  top: -120rpx;
+  border-radius: 46%;
+  animation: bgFloat 7.5s ease-in-out infinite;
+  box-shadow:
+    inset 0 0 80rpx rgba(100, 200, 255, 0.2),
+    inset 0 -30rpx 60rpx rgba(200, 140, 60, 0.2);
+}
+.bg_beach::before {
+  /* 太阳光晕 + 光芒 */
+  content: '';
+  position: absolute;
+  top: 10%;
+  right: 16%;
+  width: 72rpx;
+  height: 72rpx;
+  background: radial-gradient(circle at 50% 50%,
+    #FFF9C4 0%,
+    #FFEB3B 25%,
+    #FFC107 55%,
+    transparent 75%
+  );
+  border-radius: 50%;
+  opacity: 0.98;
+  box-shadow:
+    0 0 60rpx 25rpx rgba(255, 235, 59, 0.55),
+    0 0 110rpx 50rpx rgba(255, 193, 7, 0.35);
+  animation: sunShine 3s ease-in-out infinite;
+}
+@keyframes sunShine {
+  0%, 100% { transform: scale(1); filter: brightness(1); }
+  50%      { transform: scale(1.1); filter: brightness(1.15); }
+}
+.bg_beach::after {
+  /* 椰子树 + 沙滩阳伞 + 贝壳 */
+  content: '';
+  position: absolute;
+  bottom: 10%;
+  left: 0;
+  right: 0;
+  height: 55%;
+  background:
+    /* 椰子树叶 - 左侧 */
+    radial-gradient(ellipse 30rpx 10rpx at 22% 45%, #388E3C 0%, transparent 70%),
+    radial-gradient(ellipse 28rpx 9rpx  at 18% 42%, #2E7D32 0%, transparent 70%),
+    radial-gradient(ellipse 26rpx 8rpx  at 28% 41%, #43A047 0%, transparent 70%),
+    /* 椰子树干 */
+    linear-gradient(90deg,
+      transparent 22%, #5D4037 22%, #5D4037 24%, transparent 24%
+    ) 0% 100% / 100% 55% no-repeat,
+    /* 沙滩球 */
+    radial-gradient(circle 12rpx at 72% 82%,
+      #FF5252 0%, #FF5252 25%, #FFFFFF 25%, #FFFFFF 50%,
+      #448AFF 50%, #448AFF 75%, #FFFFFF 75%
+    ),
+    /* 贝壳点缀 */
+    radial-gradient(circle 6rpx at 52% 94%, #FFAB91 0%, transparent 70%),
+    radial-gradient(circle 5rpx at 86% 90%, #CE93D8 0%, transparent 70%),
+    radial-gradient(circle 5rpx at 40% 88%, #90CAF9 0%, transparent 70%);
+  opacity: 0.95;
+  filter: drop-shadow(1rpx 3rpx 4rpx rgba(0,0,0,0.15));
+}
+
+/* 太空：深紫黑 + 大量闪烁繁星 + 土星环 + 地球 + 火箭尾焰 + 流星 */
+.bg_space {
+  background:
+    /* 大星云光晕 */
+    radial-gradient(ellipse 70% 50% at 50% 55%,
+      rgba(76, 74, 140, 0.45) 0%,
+      rgba(46, 44, 92, 0.35) 30%,
+      transparent 70%
+    ),
+    /* 紫红星云 */
+    radial-gradient(ellipse 40% 30% at 25% 70%,
+      rgba(186, 104, 200, 0.25) 0%, transparent 70%
+    ),
+    /* 蓝色星云 */
+    radial-gradient(ellipse 35% 25% at 75% 30%,
+      rgba(66, 165, 245, 0.2) 0%, transparent 70%
+    ),
+    /* 深空底色 */
+    linear-gradient(180deg,
+      #0D0D2B 0%, #1A1A40 35%,
+      #24245C 60%, #1E1B4B 100%
+    );
+  width: 480rpx;
+  height: 580rpx;
+  top: -120rpx;
+  animation: bgFloat 10s ease-in-out infinite;
+  box-shadow:
+    inset 0 0 100rpx rgba(50, 0, 100, 0.4),
+    inset 0 0 50rpx rgba(20, 20, 60, 0.8);
+}
+.bg_space::before {
+  /* 繁星 + 闪烁动画层 */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    /* 大星（白色） */
+    radial-gradient(circle 2.5rpx at 12% 15%, #FFFFFF 0%, transparent 70%),
+    radial-gradient(circle 2.5rpx at 88% 18%, #FFFFFF 0%, transparent 70%),
+    radial-gradient(circle 2rpx   at 42% 8%,  #FFFFFF 0%, transparent 70%),
+    radial-gradient(circle 2rpx   at 65% 82%, #FFFFFF 0%, transparent 70%),
+    radial-gradient(circle 2rpx   at 20% 72%, #FFFFFF 0%, transparent 70%),
+    /* 中星 */
+    radial-gradient(circle 1.5rpx at 28% 25%, #FFFFFF 0%, transparent 70%),
+    radial-gradient(circle 1.5rpx at 55% 32%, #FFFFFF 0%, transparent 70%),
+    radial-gradient(circle 1.5rpx at 78% 48%, #FFFFFF 0%, transparent 70%),
+    radial-gradient(circle 1.5rpx at 38% 60%, #FFFFFF 0%, transparent 70%),
+    radial-gradient(circle 1.5rpx at 8%  55%, #FFFFFF 0%, transparent 70%),
+    radial-gradient(circle 1.5rpx at 92% 65%, #FFFFFF 0%, transparent 70%),
+    /* 小星（密集） */
+    radial-gradient(circle 1rpx at 15% 40%, #FFFFFF 0%, transparent 70%),
+    radial-gradient(circle 1rpx at 33% 12%, #FFFFFF 0%, transparent 70%),
+    radial-gradient(circle 1rpx at 50% 45%, #FFFFFF 0%, transparent 70%),
+    radial-gradient(circle 1rpx at 70% 20%, #FFFFFF 0%, transparent 70%),
+    radial-gradient(circle 1rpx at 83% 35%, #FFFFFF 0%, transparent 70%),
+    radial-gradient(circle 1rpx at 25% 85%, #FFFFFF 0%, transparent 70%),
+    radial-gradient(circle 1rpx at 60% 90%, #FFFFFF 0%, transparent 70%),
+    radial-gradient(circle 1rpx at 45% 72%, #FFFFFF 0%, transparent 70%),
+    /* 彩色星 */
+    radial-gradient(circle 1.8rpx at 30% 50%, #FFD54F 0%, transparent 70%),
+    radial-gradient(circle 1.8rpx at 72% 62%, #81D4FA 0%, transparent 70%),
+    radial-gradient(circle 1.8rpx at 58% 14%, #F48FB1 0%, transparent 70%);
+  animation: starTwinkle 2.5s ease-in-out infinite;
+  opacity: 0.95;
+}
+@keyframes starTwinkle {
+  0%, 100% { opacity: 0.95; }
+  40%      { opacity: 0.55; }
+  70%      { opacity: 0.85; }
+}
+.bg_space::after {
+  /* 土星 + 火箭 + 流星 */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    /* 土星本体 + 光环 */
+    radial-gradient(ellipse 22rpx 18rpx at 80% 25%,
+      #D4A574 0%, #B8860B 55%, transparent 72%
+    ),
+    /* 土星光环（扁椭圆） */
+    radial-gradient(ellipse 48rpx 8rpx at 80% 25%,
+      transparent 0%, transparent 58%,
+      rgba(210,180,140,0.7) 58%, rgba(210,180,140,0.5) 70%,
+      rgba(188,143,143,0.3) 78%, transparent 85%
+    ),
+    /* 地球（蓝色小星球） */
+    radial-gradient(circle 14rpx at 18% 38%,
+      #42A5F5 0%, #1E88E5 40%,
+      #66BB6A 40%, #66BB6A 50%, #42A5F5 50%,
+      #1565C0 85%, transparent 100%
+    ),
+    /* 流星 */
+    linear-gradient(135deg,
+      transparent 0%,
+      rgba(255,255,255,0.3) 45%,
+      rgba(255,255,255,0.9) 49%,
+      #FFFFFF 50%,
+      rgba(255,255,255,0.9) 51%,
+      rgba(255,255,255,0.3) 55%,
+      transparent 60%
+    ) 60% 5% / 25% 3% no-repeat;
+  animation: spaceObjects 5s ease-in-out infinite;
+  opacity: 0.95;
+}
+@keyframes spaceObjects {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10rpx); }
+}
+
+/* 樱花树下：粉白渐变 + 树干+枝桠 + 多层樱花簇 + 飘落花瓣雨 */
+.bg_cherry {
+  background:
+    /* 远景樱花丛 */
+    radial-gradient(ellipse 60% 25% at 25% 45%,
+      rgba(255, 182, 193, 0.6) 0%, transparent 70%
+    ),
+    radial-gradient(ellipse 55% 22% at 75% 42%,
+      rgba(255, 192, 203, 0.55) 0%, transparent 72%
+    ),
+    radial-gradient(ellipse 40% 18% at 50% 50%,
+      rgba(255, 228, 236, 0.7) 0%, transparent 68%
+    ),
+    /* 天空 */
+    linear-gradient(180deg,
+      #FFF0F5 0%, #FFE4EC 25%, #FFC2D1 50%,
+      /* 草地 */
+      #FFB6C1 50%, #F48FB1 75%, #F06292 100%
+    );
+  width: 470rpx;
+  height: 570rpx;
+  top: -115rpx;
+  animation: bgFloat 5.5s ease-in-out infinite;
+  box-shadow:
+    inset 0 0 80rpx rgba(255, 150, 180, 0.3),
+    inset 0 -40rpx 80rpx rgba(240, 100, 150, 0.25);
+}
+.bg_cherry::before {
+  /* 树干 + 主枝桠 + 樱花簇 */
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 65%;
+  height: 80%;
+  background:
+    /* 樱花簇（顶部多层圆叠） */
+    radial-gradient(circle 32rpx at 50% 10%, #FFB6C1 0%, transparent 72%),
+    radial-gradient(circle 28rpx at 30% 14%, #FFC2D1 0%, transparent 72%),
+    radial-gradient(circle 28rpx at 70% 14%, #FFC2D1 0%, transparent 72%),
+    radial-gradient(circle 24rpx at 15% 22%, #FFD1DC 0%, transparent 72%),
+    radial-gradient(circle 24rpx at 85% 22%, #FFD1DC 0%, transparent 72%),
+    radial-gradient(circle 26rpx at 40%  6%, #FFAEC9 0%, transparent 72%),
+    radial-gradient(circle 26rpx at 60%  6%, #FFAEC9 0%, transparent 72%),
+    /* 樱花细节 - 白色花芯点 */
+    radial-gradient(circle 2rpx at 45% 10%, #FFFFFF 0%, transparent 70%),
+    radial-gradient(circle 2rpx at 55% 14%, #FFFFFF 0%, transparent 70%),
+    radial-gradient(circle 2rpx at 35% 18%, #FFFFFF 0%, transparent 70%),
+    radial-gradient(circle 2rpx at 65% 18%, #FFFFFF 0%, transparent 70%),
+    /* 侧枝樱花 */
+    radial-gradient(circle 20rpx at 12% 40%, #FFB6C1 0%, transparent 72%),
+    radial-gradient(circle 20rpx at 88% 40%, #FFB6C1 0%, transparent 72%),
+    radial-gradient(circle 18rpx at 8%  55%, #FFC2D1 0%, transparent 72%),
+    radial-gradient(circle 18rpx at 92% 55%, #FFC2D1 0%, transparent 72%);
+  filter: drop-shadow(0 4rpx 10rpx rgba(255, 100, 150, 0.25));
+  opacity: 0.98;
+  z-index: 1;
+}
+/* 独立的树干层（在樱花簇之下） */
+.bg_cherry {
+  /* 用 background 叠加树干和枝桠 */
+  background-image:
+    /* 主树干 */
+    linear-gradient(90deg,
+      transparent 44%, #6D4C41 44%, #5D4037 48%, #4E342E 52%, #5D4037 56%, transparent 56%
+    ),
+    /* 左主枝桠 */
+    linear-gradient(125deg,
+      transparent 0%, transparent 34%,
+      #6D4C41 34%, #5D4037 38%, transparent 38%, transparent 55%,
+      #795548 55%, #6D4C41 58%, transparent 58%
+    ),
+    /* 右主枝桠 */
+    linear-gradient(55deg,
+      transparent 0%, transparent 34%,
+      #6D4C41 34%, #5D4037 38%, transparent 38%, transparent 55%,
+      #795548 55%, #6D4C41 58%, transparent 58%
+    ),
+    /* 原有樱花背景 */
+    radial-gradient(ellipse 60% 25% at 25% 45%,
+      rgba(255, 182, 193, 0.6) 0%, transparent 70%
+    ),
+    radial-gradient(ellipse 55% 22% at 75% 42%,
+      rgba(255, 192, 203, 0.55) 0%, transparent 72%
+    ),
+    radial-gradient(ellipse 40% 18% at 50% 50%,
+      rgba(255, 228, 236, 0.7) 0%, transparent 68%
+    ),
+    linear-gradient(180deg,
+      #FFF0F5 0%, #FFE4EC 25%, #FFC2D1 50%,
+      #FFB6C1 50%, #F48FB1 75%, #F06292 100%
+    );
+  background-size: 100% 62%, 100% 62%, 100% 62%, 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+  background-position: 50% 100%, 0 38%, 0 38%, 0 0, 0 0, 0 0, 0 0;
+  background-repeat: no-repeat;
+}
+.bg_cherry::after {
+  /* 飘落花瓣雨 - 多层动画 */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    /* 14片花瓣散布各处 */
+    radial-gradient(ellipse 4rpx 3rpx at 12% 18%, #FFB6C1 0%, transparent 70%),
+    radial-gradient(ellipse 4rpx 3rpx at 28% 32%, #FFC2D1 0%, transparent 70%),
+    radial-gradient(ellipse 4rpx 3rpx at 44% 12%, #FFD1DC 0%, transparent 70%),
+    radial-gradient(ellipse 4rpx 3rpx at 60% 26%, #FFAEC9 0%, transparent 70%),
+    radial-gradient(ellipse 4rpx 3rpx at 78% 16%, #FFB6C1 0%, transparent 70%),
+    radial-gradient(ellipse 4rpx 3rpx at 92% 30%, #FFC2D1 0%, transparent 70%),
+    radial-gradient(ellipse 3.5rpx 2.5rpx at 20% 52%, #FFD1DC 0%, transparent 70%),
+    radial-gradient(ellipse 3.5rpx 2.5rpx at 52% 46%, #FFB6C1 0%, transparent 70%),
+    radial-gradient(ellipse 3.5rpx 2.5rpx at 84% 54%, #FFAEC9 0%, transparent 70%),
+    radial-gradient(ellipse 3.5rpx 2.5rpx at 8%  72%, #FFC2D1 0%, transparent 70%),
+    radial-gradient(ellipse 3.5rpx 2.5rpx at 36% 80%, #FFB6C1 0%, transparent 70%),
+    radial-gradient(ellipse 3.5rpx 2.5rpx at 66% 76%, #FFD1DC 0%, transparent 70%),
+    radial-gradient(ellipse 3rpx 2rpx   at 50% 92%, #FFAEC9 0%, transparent 70%),
+    radial-gradient(ellipse 3rpx 2rpx   at 88% 88%, #FFB6C1 0%, transparent 70%);
+  animation: petalFall 5.5s linear infinite;
+  opacity: 0.9;
+}
+@keyframes petalFall {
+  0%   { transform: translateY(-30rpx) rotate(0deg);   opacity: 0.4; }
+  20%  { opacity: 0.95; }
+  50%  { transform: translateY(50rpx)  rotate(90deg);  opacity: 0.8; }
+  80%  { opacity: 0.5; }
+  100% { transform: translateY(140rpx) rotate(180deg); opacity: 0.1; }
+}
+
+/* 彩虹天空：圆形七色彩虹 + 云朵3朵 + 彩色热气球 + 飞鸟V字 */
+.bg_rainbow {
+  background:
+    /* 彩虹（半圆形七色环） */
+    radial-gradient(circle 240rpx at 50% 105%,
+      transparent 0%, transparent 52%,
+      #FF8A80 52%, #FF8A80 57%,
+      #FFD180 57%, #FFD180 62%,
+      #FFFF8D 62%, #FFFF8D 67%,
+      #B9F6CA 67%, #B9F6CA 72%,
+      #80D8FF 72%, #80D8FF 77%,
+      #B388FF 77%, #B388FF 82%,
+      #EA80FC 82%, #EA80FC 87%,
+      transparent 87%
+    ),
+    /* 天空渐变 */
+    linear-gradient(180deg,
+      #81D4FA 0%, #4FC3F7 35%, #29B6F6 55%,
+      #81D4FA 75%, #B3E5FC 100%
+    );
+  width: 480rpx;
+  height: 580rpx;
+  top: -120rpx;
+  border-radius: 46%;
+  animation: bgFloat 8.5s ease-in-out infinite;
+  box-shadow:
+    inset 0 0 80rpx rgba(100, 200, 255, 0.35),
+    inset 0 -30rpx 60rpx rgba(0, 150, 255, 0.2);
+}
+.bg_rainbow::before {
+  /* 三朵立体云 */
+  content: '';
+  position: absolute;
+  top: 6%;
+  left: 0;
+  right: 0;
+  height: 35%;
+  background:
+    /* 左上大云 */
+    radial-gradient(circle 20rpx at 18% 55%, rgba(255,255,255,0.98) 0%, transparent 72%),
+    radial-gradient(circle 24rpx at 26% 50%, rgba(255,255,255,0.98) 0%, transparent 72%),
+    radial-gradient(circle 20rpx at 34% 56%, rgba(255,255,255,0.98) 0%, transparent 72%),
+    radial-gradient(ellipse 42rpx 16rpx at 26% 62%, rgba(255,255,255,0.96) 0%, transparent 72%),
+    /* 右中云 */
+    radial-gradient(circle 16rpx at 72% 40%, rgba(255,255,255,0.96) 0%, transparent 72%),
+    radial-gradient(circle 20rpx at 80% 36%, rgba(255,255,255,0.96) 0%, transparent 72%),
+    radial-gradient(circle 16rpx at 88% 42%, rgba(255,255,255,0.96) 0%, transparent 72%),
+    radial-gradient(ellipse 36rpx 14rpx at 80% 46%, rgba(255,255,255,0.94) 0%, transparent 72%),
+    /* 中间小云 */
+    radial-gradient(circle 12rpx at 50% 22%, rgba(255,255,255,0.9) 0%, transparent 72%),
+    radial-gradient(circle 14rpx at 55% 20%, rgba(255,255,255,0.9) 0%, transparent 72%),
+    radial-gradient(ellipse 24rpx 10rpx at 52% 26%, rgba(255,255,255,0.88) 0%, transparent 72%);
+  animation: cloudFloat2 8s ease-in-out infinite;
+  filter: drop-shadow(0 4rpx 8rpx rgba(0,100,200,0.15));
+}
+@keyframes cloudFloat2 {
+  0%, 100% { transform: translateX(0) translateY(0); }
+  50%      { transform: translateX(15rpx) translateY(-6rpx); }
+}
+.bg_rainbow::after {
+  /* 热气球 + 飞鸟V形 + 草地花朵 */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    /* 热气球 - 红 */
+    radial-gradient(ellipse 20rpx 22rpx at 14% 62%,
+      #EF5350 0%, #E53935 60%, transparent 75%
+    ),
+    /* 热气球花纹 */
+    repeating-linear-gradient(
+      90deg,
+      transparent 0rpx, transparent 6rpx,
+      rgba(255,255,255,0.25) 6rpx, rgba(255,255,255,0.25) 8rpx
+    ) 5.5% 55% / 17% 18% no-repeat,
+    /* 热气球吊篮 */
+    linear-gradient(180deg, #8D6E63 0%, #6D4C41 100%) 10.5% 79% / 8% 5% no-repeat,
+    /* 吊篮绳索 */
+    linear-gradient(90deg, transparent 11%, rgba(120,80,60,0.6) 11%, rgba(120,80,60,0.6) 11.5%, transparent 11.5%, transparent 19%, rgba(120,80,60,0.6) 19%, rgba(120,80,60,0.6) 19.5%, transparent 19.5%) 0% 74% / 100% 6% no-repeat,
+    /* 飞鸟1 */
+    radial-gradient(ellipse 3rpx 1.5rpx at 60% 42%, #37474F 0%, transparent 72%),
+    /* 飞鸟2 */
+    radial-gradient(ellipse 3rpx 1.5rpx at 66% 45%, #455A64 0%, transparent 72%),
+    /* 草地花 */
+    radial-gradient(circle 4rpx at 22% 94%, #FF6B6B 0%, transparent 70%),
+    radial-gradient(circle 4rpx at 44% 96%, #FFD93D 0%, transparent 70%),
+    radial-gradient(circle 4rpx at 66% 93%, #C77DFF 0%, transparent 70%),
+    radial-gradient(circle 4rpx at 85% 95%, #6BCB77 0%, transparent 70%);
+  opacity: 0.98;
+}
+
+@keyframes bgFloat {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%      { transform: translateX(-50%) translateY(-12rpx); }
+}
+
+/* === 配饰：眼镜等（修复选择器，直接绑定outfits.accessory id） === */
+.accessory {
+  position: absolute;
+  top: 68rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* 圆框眼镜：双圆镜片 + 鼻梁 */
+.acc_glasses {
+  width: 130rpx;
+  height: 26rpx;
+  border: 4rpx solid #2C3E50;
+  border-top: none;
+  border-radius: 0 0 50rpx 50rpx;
+  top: 88rpx;
+  z-index: 5;
+}
+.acc_glasses::before,
+.acc_glasses::after {
+  content: '';
+  position: absolute;
+  top: -26rpx;
+  width: 46rpx;
+  height: 38rpx;
+  border: 4rpx solid #2C3E50;
+  border-radius: 50%;
+  background: rgba(135, 206, 235, 0.12);
+  box-shadow: inset 0 0 8rpx rgba(255,255,255,0.3);
+}
+.acc_glasses::before { left: 4rpx; }
+.acc_glasses::after { right: 4rpx; }
+.acc_glasses::before {
+  background-image:
+    radial-gradient(circle at 28% 30%, rgba(255,255,255,0.6) 2rpx, transparent 4rpx),
+    rgba(135, 206, 235, 0.12);
+}
+
+/* 墨镜：深色镜片 + 反光条 */
+.acc_sunglasses {
+  width: 130rpx;
+  height: 26rpx;
+  border: 4rpx solid #1A1A1A;
+  border-top: none;
+  border-radius: 0 0 50rpx 50rpx;
+  top: 88rpx;
+  z-index: 5;
+}
+.acc_sunglasses::before,
+.acc_sunglasses::after {
+  content: '';
+  position: absolute;
+  top: -26rpx;
+  width: 46rpx;
+  height: 38rpx;
+  background: linear-gradient(160deg, #34495E 0%, #1A1A1A 50%, #2C3E50 100%);
+  border: 4rpx solid #000;
+  border-radius: 12rpx 12rpx 10rpx 10rpx;
+  box-shadow:
+    inset 0 -6rpx 0 rgba(0,0,0,0.4),
+    inset 6rpx 0 12rpx rgba(255,255,255,0.2);
+}
+.acc_sunglasses::before { left: 4rpx; }
+.acc_sunglasses::after { right: 4rpx; }
+.acc_sunglasses::after {
+  background-image:
+    linear-gradient(90deg, rgba(255,255,255,0.25) 0%, transparent 40%),
+    linear-gradient(160deg, #34495E 0%, #1A1A1A 50%, #2C3E50 100%);
+}
+
+/* 口罩：医用蓝/白 + 耳挂 */
+.acc_mask {
+  width: 104rpx;
+  height: 52rpx;
+  background: #FFFFFF;
+  border: 3rpx solid #BDC3C7;
+  border-radius: 6rpx 6rpx 28rpx 28rpx;
+  top: 110rpx;
+  box-shadow: inset 0 -4rpx 8rpx rgba(0,0,0,0.04);
+}
+.acc_mask::before,
+.acc_mask::after {
+  content: '';
+  position: absolute;
+  top: 8rpx;
+  width: 22rpx;
+  height: 6rpx;
+  background: #AAB7B8;
+  border-radius: 3rpx;
+}
+.acc_mask::before { left: -16rpx; transform: rotate(-20deg); }
+.acc_mask::after { right: -16rpx; transform: rotate(20deg); }
+.acc_mask {
+  background-image:
+    linear-gradient(180deg, rgba(135,206,235,0.2) 0%, transparent 40%);
+}
+
+/* 耳机：头戴式 + 耳罩（放大贴合头部） */
+.acc_headphone {
+  width: 186rpx;
+  height: 80rpx;
+  border: 7rpx solid #1A1A1A;
+  border-bottom: none;
+  border-radius: 96rpx 96rpx 0 0;
+  top: 36rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  background: transparent;
+  z-index: 6;
+}
+.acc_headphone::before,
+.acc_headphone::after {
+  content: '';
+  position: absolute;
+  bottom: -18rpx;
+  width: 42rpx;
+  height: 58rpx;
+  background: linear-gradient(180deg, #34495E 0%, #2C3E50 100%);
+  border: 5rpx solid #000;
+  border-radius: 12rpx;
+  box-shadow:
+    inset 0 0 8rpx rgba(255,255,255,0.12),
+    0 2rpx 6rpx rgba(0,0,0,0.2);
+}
+.acc_headphone::before { left: -10rpx; }
+.acc_headphone::after { right: -10rpx; }
+.acc_headphone::before {
+  background-image:
+    radial-gradient(circle at 50% 35%, #E74C3C 5rpx, transparent 7rpx),
+    linear-gradient(180deg, #34495E 0%, #2C3E50 100%);
+}
+
+/* 项链：金链 + 吊坠 */
+.acc_necklace {
+  width: 70rpx;
+  height: 36rpx;
+  border: 5rpx solid #DAA520;
+  border-top: none;
+  border-radius: 0 0 38rpx 38rpx;
+  top: 195rpx;
+  z-index: 10;
+  background: transparent;
+}
+.acc_necklace::after {
+  content: '💎';
+  position: absolute;
+  bottom: -10rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 20rpx;
+  filter: drop-shadow(0 0 4rpx rgba(100,149,237,0.6));
+}
+
+/* 围巾：红蓝双色 + 流苏 */
+.acc_scraf {
+  width: 90rpx;
+  height: 58rpx;
+  background: linear-gradient(135deg, #E74C3C 0%, #C0392B 50%, #922B21 100%);
+  border-radius: 10rpx;
+  top: 190rpx;
+  z-index: 10;
+  box-shadow: inset 0 -4rpx 0 rgba(0,0,0,0.1);
+}
+.acc_scraf::after {
+  content: '';
+  position: absolute;
+  bottom: -28rpx;
+  left: 34rpx;
+  width: 30rpx;
+  height: 36rpx;
+  background: linear-gradient(180deg, #C0392B 0%, #922B21 100%);
+  border-radius: 4rpx 4rpx 10rpx 10rpx;
+}
+.acc_scraf::after {
+  background-image:
+    repeating-linear-gradient(
+      180deg,
+      transparent,
+      transparent 6rpx,
+      rgba(255,255,255,0.2) 6rpx,
+      rgba(255,255,255,0.2) 8rpx
+    ), linear-gradient(180deg, #C0392B 0%, #922B21 100%);
+}
+
+/* === 阴影 === */
+.char-shadow {
+  width: 120rpx;
+  height: 20rpx;
+  background: rgba(0,0,0,0.06);
+  border-radius: 50%;
+  margin-top: -10rpx;
+  z-index: 1;
+  animation: shadowBreathe 3s ease-in-out infinite;
+}
+
+@keyframes shadowBreathe {
+  0%, 100% { transform: scale(1); opacity: 0.06; }
+  50% { transform: scale(0.92); opacity: 0.1; }
+}
+
+/* === 特效层 === */
+/* 心情好时的粒子效果 */
+.sparkle-particle {
+  position: absolute;
+  width: 8rpx;
+  height: 8rpx;
+  background: #FFD700;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: sparkleFloat 2s ease-out infinite;
+}
+
+@keyframes sparkleFloat {
+  0% { transform: translateY(0) scale(0); opacity: 0; }
+  20% { transform: translateY(-20rpx) scale(1); opacity: 1; }
+  100% { transform: translateY(-80rpx) scale(0); opacity: 0; }
+}
+
+/* 状态变化时的光晕 */
+.glow-effect {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: glowPulse 1s ease-out;
+}
+
+@keyframes glowPulse {
+  0% { box-shadow: 0 0 0 0 rgba(126, 200, 160, 0.4); }
+  100% { box-shadow: 0 0 0 40rpx rgba(126, 200, 160, 0); }
+}

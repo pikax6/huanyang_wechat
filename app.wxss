@@ -1,0 +1,145 @@
+/* 全局样式 - 好好养自己 */
+
+page {
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
+  font-size: 28rpx;
+  color: #3A3A3A;
+  background-color: #F5F9F5;
+  box-sizing: border-box;
+}
+
+/* 主题CSS变量 - 通过page样式动态设置 */
+page {
+  --color-primary: #7EC8A0;
+  --color-primary-light: #A8DDBE;
+  --color-primary-dark: #5BA87E;
+  --color-accent: #FF8B6E;
+  --color-accent-light: #FFB4A0;
+  --color-bg: #F5F9F5;
+  --color-card: #FFFFFF;
+  --color-text-primary: #3A3A3A;
+  --color-text-secondary: #8A8A8A;
+  --color-text-light: #B8B8B8;
+  --color-border: #E8F0E8;
+  --color-shadow: rgba(126, 200, 160, 0.15);
+  --color-complexion: #FF8B6E;
+  --color-energy: #F5C842;
+  --color-body: #7EC8A0;
+  --color-sleep: #9B8EC4;
+  --color-progress-bg: #E8F0E8;
+  --color-progress-fill: #7EC8A0;
+}
+
+/* 通用容器 */
+.container {
+  padding: 24rpx 32rpx;
+  min-height: 100vh;
+}
+
+/* 卡片 */
+.card {
+  background: var(--color-card);
+  border-radius: 24rpx;
+  padding: 32rpx;
+  box-shadow: 0 4rpx 20rpx var(--color-shadow);
+  margin-bottom: 24rpx;
+}
+
+/* 标题 */
+.section-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-bottom: 20rpx;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+/* 按钮 */
+.btn-primary {
+  background: var(--color-primary);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 48rpx;
+  padding: 24rpx 48rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.btn-primary:active {
+  transform: scale(0.96);
+  opacity: 0.9;
+}
+
+.btn-secondary {
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  border: none;
+  border-radius: 48rpx;
+  padding: 24rpx 48rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* 进度条 */
+.progress-bar {
+  height: 12rpx;
+  background: var(--color-progress-bg);
+  border-radius: 6rpx;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--color-progress-fill);
+  border-radius: 6rpx;
+  transition: width 0.3s ease;
+}
+
+/* 标签 */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 8rpx 20rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  margin-right: 12rpx;
+  margin-bottom: 12rpx;
+}
+
+/* 动画 */
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10rpx); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20rpx); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.bounce {
+  animation: bounce 2s ease-in-out infinite;
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* 对话气泡 */
+.bubble {
+  background: var(--color-card);
+  border-radius: 24rpx 24rpx 24rpx 8rpx;
+  padding: 20rpx 28rpx;
+  font-size: 26rpx;
+  color: var(--color-text-primary);
+  box-shadow: 0 4rpx 12rpx var(--color-shadow);
+  display: inline-block;
+  max-width: 80%;
+}

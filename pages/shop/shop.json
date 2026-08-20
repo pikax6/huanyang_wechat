@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "装扮商店",
+  "usingComponents": {
+    "character": "../../components/character/character"
+  }
+}

@@ -1,0 +1,115 @@
+<!-- 装扮商店 -->
+<view class="page-container" style="background: {{theme.bg}};">
+
+  <!-- 顶部积分条 -->
+  <view class="points-header" style="background: {{theme.card}};">
+    <view class="points-info">
+      <text class="points-icon">💎</text>
+      <view class="points-texts">
+        <text class="points-num">{{points}}</text>
+        <text class="points-label">我的积分</text>
+      </view>
+    </view>
+    <view class="points-tip">
+      <text class="tip-text">打卡/升级都能赚积分</text>
+    </view>
+  </view>
+
+  <!-- 小人预览区（支持试戴） -->
+  <view class="preview-card" style="background: {{theme.card}};">
+    <view class="preview-title">
+      <text>{{tryOnId ? '试戴效果预览' : '当前装扮效果'}}</text>
+      <text class="preview-hint" wx:if="{{tryOnId}}">✨ 试戴中</text>
+    </view>
+    <view class="preview-stage" style="background: {{stageBg}};">
+      <character character="{{previewCharacter || character}}" showDialogue="{{false}}"></character>
+    </view>
+    <view class="preview-tip" wx:if="{{!tryOnId}}">👇 点击下方道具可试戴预览</view>
+  </view>
+
+  <!-- 分类Tab -->
+  <scroll-view class="category-scroll" scroll-x enable-flex>
+    <view class="category-tabs" style="background: {{theme.card}};">
+      <view class="cat-tab {{currentCat === item.id ? 'active' : ''}}"
+            wx:for="{{categories}}" wx:key="id"
+            bindtap="switchCat" data-cat="{{item.id}}"
+            style="color: {{currentCat === item.id ? theme.primary : theme.textSecondary}};">
+        <text class="cat-icon">{{item.icon}}</text>
+        <text class="cat-name">{{item.name}}</text>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 道具列表 -->
+  <view class="item-list">
+    <view class="item-card {{tryOnId === item.id ? 'trying' : ''}}"
+          wx:for="{{currentItems}}" wx:key="id"
+          bindtap="tryOnItem" data-item="{{item}}"
+          style="background: {{theme.card}}; border-color: {{tryOnId === item.id ? theme.primary : 'transparent'}};">
+      <!-- 试戴标识 -->
+      <view class="trying-badge" wx:if="{{tryOnId === item.id}}" style="background: {{theme.primary}};">
+        <text>试戴中</text>
+      </view>
+      <!-- 已装备标识（默认道具不显示，避免冗余） -->
+      <view class="equipped-badge" wx:if="{{equippedId === item.id && item.price > 0}}" style="background: {{theme.primary}};">
+        <text>✓ 已装备</text>
+      </view>
+
+      <view class="item-top">
+        <view class="item-icon"
+              style="background: {{ownedItemMap[item.id] || item.price === 0 ? theme.primary + '22' : theme.border + '66'}};">
+          {{item.icon}}
+        </view>
+        <view class="item-info">
+          <text class="item-name">{{item.name}}</text>
+          <text class="item-desc">{{item.desc}}</text>
+        </view>
+      </view>
+
+      <view class="item-bottom">
+        <!-- 价格 -->
+        <view class="item-price" wx:if="{{item.price > 0}}">
+          <text class="price-icon">💎</text>
+          <text class="price-num">{{item.price}}</text>
+        </view>
+        <view class="item-price free" wx:else>
+          <text class="free-text">免费</text>
+        </view>
+
+        <!-- 未拥有 + 积分不足：禁用按钮 -->
+        <view class="item-btn disabled" wx:if="{{!ownedItemMap[item.id] && item.price > 0 && points < item.price}}">
+          <text>积分不足</text>
+        </view>
+        <!-- 未拥有 + 积分足够：兑换按钮 -->
+        <view class="item-btn" wx:elif="{{!ownedItemMap[item.id] && item.price > 0 && points >= item.price}}"
+              catchtap="buyItem" data-item="{{item}}"
+              style="background: {{theme.primary}};">
+          <text>兑换</text>
+        </view>
+        <!-- 默认道具 + 已装备：当前默认标识 -->
+        <view class="item-btn default-btn" wx:elif="{{item.price === 0 && equippedId === item.id}}">
+          <text>当前默认</text>
+        </view>
+        <!-- 已拥有（非默认）+ 已装备：卸下按钮 -->
+        <view class="item-btn equip equipped" wx:elif="{{ownedItemMap[item.id] && equippedId === item.id}}"
+              catchtap="equipItem" data-item="{{item}}"
+              style="background: {{theme.primary}}; color: #fff;">
+          <text>卸下</text>
+        </view>
+        <!-- 已拥有 + 未装备：佩戴按钮 -->
+        <view class="item-btn equip" wx:elif="{{ownedItemMap[item.id] || item.price === 0}}"
+              catchtap="equipItem" data-item="{{item}}"
+              style="border-color: {{theme.primary}}; color: {{theme.primary}};">
+          <text>佩戴</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 已拥有提示 -->
+  <view class="owned-tip">
+    <text class="owned-text">已拥有 {{ownedCount}} / {{totalCount}} 件装扮</text>
+  </view>
+
+  <view class="bottom-space"></view>
+</view>

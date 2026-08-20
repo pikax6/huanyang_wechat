@@ -1,0 +1,93 @@
+<!-- 今日首页 -->
+<view class="page-container" style="background: {{theme.bg}};">
+  <!-- 顶部问候 + 快捷入口 -->
+  <view class="header">
+    <view class="greeting">
+      <text class="greeting-text">{{greeting}}，大人</text>
+      <text class="greeting-emoji">{{greetingEmoji}}</text>
+    </view>
+    <view class="header-actions">
+      <!-- 主题切换入口 -->
+      <view class="header-action-btn theme-btn" bindtap="goSettings">
+        <text class="action-icon">🎨</text>
+        <text class="action-label">主题</text>
+      </view>
+    </view>
+  </view>
+  <view class="date-text">{{dateText}}</view>
+
+  <!-- 小人区域 -->
+  <view class="char-card" style="background: {{theme.card}};">
+    <!-- 装扮+积分入口卡片（更显眼） -->
+    <view class="dressup-entry" bindtap="goShop" style="background: linear-gradient(135deg, {{theme.primary}}22 0%, {{theme.primary}}0A 100%); border-color: {{theme.primary}}44;">
+      <view class="entry-left">
+        <view class="entry-icon" style="background: {{theme.primary}};">👗</view>
+        <view class="entry-info">
+          <text class="entry-title">装扮商店</text>
+          <text class="entry-sub">换装养自己，越养越好看</text>
+        </view>
+      </view>
+      <view class="entry-right">
+        <view class="points-pill" style="background: linear-gradient(135deg, #FFE8A3 0%, #FFD26A 100%);">
+          <text class="pill-icon">💎</text>
+          <text class="pill-num">{{points}}</text>
+        </view>
+        <text class="entry-arrow">›</text>
+      </view>
+    </view>
+    <character character="{{character}}" showDialogue="{{true}}" context="{{dialogueContext}}" bind:tap="onCharacterTap" />
+  </view>
+
+  <!-- 小人状态条 -->
+  <view class="card" style="background: {{theme.card}};">
+    <view class="section-title">📊 小人状态</view>
+    <view class="status-list">
+      <view class="status-item" wx:for="{{statusList}}" wx:key="key">
+        <text class="status-icon">{{item.icon}}</text>
+        <text class="status-name">{{item.name}}</text>
+        <view class="status-bar-wrap">
+          <view class="status-bar" style="width: {{item.value}}%; background: {{item.color}};"></view>
+        </view>
+        <text class="status-text">{{item.text}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 今日还阳任务 -->
+  <view class="card" style="background: {{theme.card}};">
+    <view class="section-title">🔥 今日还阳任务</view>
+    <view class="task-list" wx:if="{{tasks.length > 0}}">
+      <view class="task-item {{item.done ? 'done' : ''}}" wx:for="{{tasks}}" wx:key="id" bindtap="toggleTask" data-index="{{index}}" style="border-color: {{item.done ? theme.primary : theme.border}};">
+        <view class="task-check" style="background: {{item.done ? theme.primary : 'transparent'}}; border-color: {{theme.border}};">
+          <text wx:if="{{item.done}}" class="check-icon">✓</text>
+        </view>
+        <text class="task-text">{{item.text}}</text>
+      </view>
+    </view>
+    <view class="empty-tip" wx:else>
+      <text class="empty-emoji">🌙</text>
+      <text class="empty-text">还没有还阳计划</text>
+      <text class="empty-hint">去「还阳」页添加吧～</text>
+    </view>
+  </view>
+
+  <!-- 今日心情快捷打卡 -->
+  <view class="card" style="background: {{theme.card}};">
+    <view class="section-title">💭 今日心情</view>
+    <view class="mood-quick">
+      <view class="mood-emoji-wrap {{selectedMood === item.value ? 'selected' : ''}}" 
+            wx:for="{{moodLevels}}" wx:key="value" 
+            bindtap="quickMood" data-value="{{item.value}}"
+            style="background: {{selectedMood === item.value ? item.color + '22' : 'transparent'}}; border-color: {{selectedMood === item.value ? item.color : 'transparent'}};">
+        <text class="emoji">{{item.emoji}}</text>
+        <text class="mood-label">{{item.label}}</text>
+      </view>
+    </view>
+    <view class="mood-recorded" wx:if="{{selectedMood > 0}}">
+      <text>已记录今日心情，去「心情」页查看更多 →</text>
+    </view>
+  </view>
+
+  <!-- 底部留白 -->
+  <view class="bottom-space"></view>
+</view>

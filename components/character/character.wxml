@@ -1,0 +1,78 @@
+<!-- 虚拟小人组件 - 增强版 -->
+<view class="character-wrap">
+  <!-- 对话气泡 -->
+  <view class="bubble {{showBubble ? 'show' : ''}}" wx:if="{{dialogue}}">
+    <text>{{dialogue}}</text>
+    <view class="bubble-tail"></view>
+  </view>
+
+  <!-- 小人主体 -->
+  <view class="char-body" bindtap="onTapCharacter">
+    <!-- 背景装饰（放在最底层，z-index=0） -->
+    <view class="bg-decor {{outfits.bg}}" wx:if="{{outfits.bg && outfits.bg !== 'bg_none'}}"></view>
+
+    <!-- 装饰：帽子（z-index最高） -->
+    <view class="hat {{outfits.hat}}" wx:if="{{outfits.hat && outfits.hat !== 'hat_none'}}"></view>
+
+    <!-- 头部 -->
+    <view class="head" style="background: {{headColor}};">
+      <!-- 头发 -->
+      <view class="hair"></view>
+
+      <!-- 黑眼圈 -->
+      <view class="dark-circles {{darkCircleClass}}" wx:if="{{showDarkCircles}}"></view>
+
+      <!-- 眼睛 -->
+      <view class="eyes {{eyeClass}}">
+        <view class="eye eye-left">
+          <view class="pupil"></view>
+          <view class="eye-shine" wx:if="{{eyeShine}}"></view>
+        </view>
+        <view class="eye eye-right">
+          <view class="pupil"></view>
+          <view class="eye-shine" wx:if="{{eyeShine}}"></view>
+        </view>
+      </view>
+
+      <!-- 配饰：眼镜 -->
+      <view class="accessory {{outfits.accessory}}" wx:if="{{outfits.accessory && outfits.accessory !== 'acc_none'}}"></view>
+
+      <!-- 腮红 -->
+      <view class="blush blush-left" wx:if="{{showBlush}}"></view>
+      <view class="blush blush-right" wx:if="{{showBlush}}"></view>
+
+      <!-- 嘴巴 -->
+      <view class="mouth mouth-{{mouthType}}"></view>
+
+      <!-- 痘痘（气色极差时） -->
+      <view class="pimple pimple-1" wx:if="{{showPimples}}"></view>
+      <view class="pimple pimple-2" wx:if="{{showPimples}}"></view>
+
+      <!-- 心情好时的粒子效果 -->
+      <view class="sparkle-particle sp-1" wx:if="{{showSparkles}}"></view>
+      <view class="sparkle-particle sp-2" wx:if="{{showSparkles}}" style="animation-delay: 0.5s; left: 60%;"></view>
+      <view class="sparkle-particle sp-3" wx:if="{{showSparkles}}" style="animation-delay: 1s; left: 30%;"></view>
+    </view>
+
+    <!-- 身体 -->
+    <view class="body body-{{bodyType}} {{outfits.cloth && outfits.cloth !== 'cloth_none' ? 'has-clothing' : ''}}">
+      <!-- 衣服 -->
+      <view class="clothing {{outfits.cloth}}" wx:if="{{outfits.cloth && outfits.cloth !== 'cloth_none'}}"></view>
+      <!-- 手臂 -->
+      <view class="arm arm-left {{postureClass}}"></view>
+      <view class="arm arm-right {{postureClass}}"></view>
+    </view>
+
+    <!-- 腿 -->
+    <view class="legs">
+      <view class="leg leg-left"></view>
+      <view class="leg leg-right"></view>
+    </view>
+
+    <!-- 鞋子 -->
+    <view class="shoes {{outfits.shoes}}" wx:if="{{outfits.shoes && outfits.shoes !== 'shoes_none'}}"></view>
+  </view>
+
+  <!-- 阴影 -->
+  <view class="char-shadow"></view>
+</view>

@@ -1,0 +1,98 @@
+<!-- 心情页 - 情绪记录 -->
+<view class="page-container" style="background: {{theme.bg}};">
+  <!-- 今日心情记录 -->
+  <view class="card record-card" style="background: {{theme.card}};">
+    <view class="section-title">💭 今天心情怎么样？</view>
+    
+    <!-- Emoji选择 -->
+    <view class="mood-selector">
+      <view class="mood-item {{selectedMood === item.value ? 'selected' : ''}}" 
+            wx:for="{{moodLevels}}" wx:key="value"
+            bindtap="selectMood" data-value="{{item.value}}"
+            style="background: {{selectedMood === item.value ? item.color + '22' : 'transparent'}}; border-color: {{selectedMood === item.value ? item.color : 'transparent'}};">
+        <text class="mood-emoji">{{item.emoji}}</text>
+        <text class="mood-label" style="color: {{selectedMood === item.value ? item.color : theme.textSecondary}};">{{item.label}}</text>
+      </view>
+    </view>
+
+    <!-- 场景标签 -->
+    <view class="scene-section" wx:if="{{selectedMood > 0}}">
+      <text class="scene-title">此刻的场景</text>
+      <view class="scene-tags">
+        <view class="scene-tag {{selectedSceneMap[item.id] ? 'selected' : ''}}" 
+              wx:for="{{sceneTags}}" wx:key="id"
+              bindtap="toggleScene" data-id="{{item.id}}"
+              style="background: {{selectedSceneMap[item.id] ? theme.primary + '22' : 'transparent'}}; border-color: {{selectedSceneMap[item.id] ? theme.primary : theme.border}}; color: {{selectedSceneMap[item.id] ? theme.primary : theme.textSecondary}};">
+          {{item.label}}
+        </view>
+      </view>
+    </view>
+
+    <!-- 文字记录 -->
+    <view class="note-section" wx:if="{{selectedMood > 0}}">
+      <text class="scene-title">想说点什么？（可选）</text>
+      <textarea class="note-input" 
+        placeholder="记录一下此刻的感受..."
+        placeholder-style="color: {{theme.textLight}};"
+        value="{{noteText}}"
+        bindinput="onNoteInput"
+        maxlength="200"
+        style="background: {{theme.bg}}; color: {{theme.textPrimary}}; border-color: {{theme.border}};"
+      />
+      <view class="save-btn" bindtap="saveMood" style="background: {{theme.primary}};">保存心情</view>
+    </view>
+  </view>
+
+  <!-- 本周情绪趋势 -->
+  <view class="card" style="background: {{theme.card}};">
+    <view class="section-title">📈 本周情绪趋势</view>
+    <view class="trend-chart">
+      <view class="trend-bar-wrap" wx:for="{{weeklyTrend}}" wx:key="date">
+        <view class="trend-bar" style="height: {{item.barHeight}}rpx; background: {{item.moodColor}};" wx:if="{{item.hasData}}"></view>
+        <view class="trend-empty" wx:else></view>
+        <text class="trend-emoji" wx:if="{{item.hasData}}">{{item.emoji}}</text>
+        <text class="trend-day">{{item.day}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 情绪×习惯洞察 -->
+  <view class="card" style="background: {{theme.card}};">
+    <view class="section-title">💡 情绪×习惯洞察</view>
+    <view wx:if="{{insights.ready}}" class="insights-list">
+      <view class="insight-item" wx:for="{{insights.insights}}" wx:key="message" style="background: {{theme.primary}}0F;">
+        <text class="insight-icon">💡</text>
+        <view class="insight-content">
+          <text class="insight-text">{{item.message}}</text>
+          <text class="insight-tip">{{item.tip}}</text>
+        </view>
+      </view>
+    </view>
+    <view wx:else class="insights-empty">
+      <text class="empty-emoji">📊</text>
+      <text class="empty-text">{{insights.message}}</text>
+      <text class="empty-hint">坚持记录心情，解锁专属洞察</text>
+    </view>
+  </view>
+
+  <!-- 本月情绪热力图 -->
+  <view class="card" style="background: {{theme.card}};">
+    <view class="section-title">🔥 本月情绪热力图</view>
+    <view class="heatmap">
+      <view class="heatmap-grid">
+        <view class="heatmap-cell {{item.hasData ? 'has-data' : ''}}" 
+              wx:for="{{heatmapData}}" wx:key="date"
+              style="background: {{item.hasData ? item.color : theme.bg}};">
+          <text class="heatmap-day" wx:if="{{item.hasData}}">{{item.date}}</text>
+        </view>
+      </view>
+      <view class="heatmap-legend">
+        <text class="legend-label">差</text>
+        <view class="legend-bar" style="background: linear-gradient(to right, #FF6B6B, #FFB347, #F5C842, #7EC8A0, #5BA87E);"></view>
+        <text class="legend-label">好</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="bottom-space"></view>
+</view>

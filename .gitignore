@@ -1,0 +1,27 @@
+# ===== WeChat 小程序构建/依赖产物 =====
+node_modules/
+miniprogram_npm/        # 微信开发者工具「构建 npm」产出
+dist/
+build/
+
+# ===== 微信开发者工具本地私有配置（含本机设置，不入库）=====
+project.private.config.json
+
+# ===== 隐私 / 软著材料（含个人信息，公开仓库务必排除）=====
+软著材料/
+
+# ===== 本机 AI 工作目录 =====
+.workbuddy/
+
+# ===== 操作系统 / 编辑器噪声 =====
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+*~
+
+# ===== 日志 =====
+*.log
+npm-debug.log*

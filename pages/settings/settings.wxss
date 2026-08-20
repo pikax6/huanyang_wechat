@@ -1,0 +1,176 @@
+/* 设置页样式 */
+.page-container {
+  min-height: 100vh;
+  padding: 24rpx 32rpx 120rpx;
+}
+
+/* 卡片 */
+.card {
+  border-radius: 24rpx;
+  padding: 32rpx;
+  box-shadow: 0 4rpx 20rpx var(--color-shadow);
+  margin-bottom: 24rpx;
+}
+
+.section-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-bottom: 24rpx;
+}
+
+/* 主题选择网格（2列） */
+.theme-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20rpx;
+}
+
+.theme-item {
+  position: relative;
+  padding: 28rpx 20rpx;
+  border-radius: 20rpx;
+  border: 3rpx solid;
+  background: rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  transition: all 0.2s ease;
+}
+
+.theme-item:active {
+  transform: scale(0.97);
+}
+
+.theme-icon-wrap {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8rpx;
+}
+
+.theme-icon {
+  font-size: 40rpx;
+}
+
+.theme-name {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.theme-desc {
+  font-size: 20rpx;
+  color: var(--color-text-light);
+  text-align: center;
+  line-height: 1.4;
+}
+
+.theme-check {
+  position: absolute;
+  top: 12rpx;
+  right: 12rpx;
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.check-icon {
+  color: #FFFFFF;
+  font-size: 22rpx;
+  font-weight: bold;
+}
+
+/* 设置项列表 */
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 8rpx;
+  border-bottom: 2rpx solid var(--color-border);
+}
+
+.setting-item:last-child {
+  border-bottom: none;
+}
+
+.setting-item.danger:active {
+  opacity: 0.6;
+}
+
+.setting-left {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.setting-icon {
+  font-size: 32rpx;
+}
+
+.setting-name {
+  font-size: 28rpx;
+  color: var(--color-text-primary);
+}
+
+.danger-text {
+  color: #FF8B6E;
+}
+
+.setting-arrow {
+  font-size: 36rpx;
+  color: var(--color-text-light);
+}
+
+.time-picker {
+  font-size: 28rpx;
+  font-weight: 600;
+  padding: 8rpx 24rpx;
+  border-radius: 16rpx;
+}
+
+/* 关于 */
+.about-card {
+  padding: 40rpx 32rpx;
+}
+
+.about-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+  padding: 20rpx 0;
+}
+
+.about-logo {
+  font-size: 72rpx;
+}
+
+.about-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.about-slogan {
+  font-size: 26rpx;
+  color: var(--color-text-secondary);
+}
+
+.about-version {
+  font-size: 24rpx;
+  color: var(--color-text-light);
+  margin-top: 8rpx;
+}
+
+/* 底部留白 */
+.bottom-space {
+  height: 40rpx;
+}

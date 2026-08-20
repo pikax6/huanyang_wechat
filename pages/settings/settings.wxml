@@ -1,0 +1,76 @@
+<!-- 设置页：主题切换 / 提醒设置 / 数据管理 / 关于 -->
+<view class="page-container" style="background: {{theme.bg}};">
+  <!-- 主题选择 -->
+  <view class="card" style="background: {{theme.card}};">
+    <view class="section-title">🎨 选择主题</view>
+    <view class="theme-grid">
+      <view class="theme-item {{currentThemeId === item.id ? 'active' : ''}}"
+            wx:for="{{themeList}}" wx:key="id"
+            bindtap="switchTheme" data-id="{{item.id}}"
+            style="border-color: {{currentThemeId === item.id ? theme.primary : theme.border}};">
+        <view class="theme-icon-wrap" style="background: {{theme.primaryLight}};">
+          <text class="theme-icon">{{item.icon}}</text>
+        </view>
+        <text class="theme-name">{{item.name}}</text>
+        <text class="theme-desc">{{item.desc}}</text>
+        <view class="theme-check" wx:if="{{currentThemeId === item.id}}" style="background: {{theme.primary}};">
+          <text class="check-icon">✓</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 提醒设置 -->
+  <view class="card" style="background: {{theme.card}};">
+    <view class="section-title">🔔 提醒设置</view>
+    <view class="setting-item">
+      <view class="setting-left">
+        <text class="setting-icon">⏰</text>
+        <text class="setting-name">打卡提醒</text>
+      </view>
+      <switch checked="{{notify}}" bindchange="toggleNotify" color="{{theme.primary}}" />
+    </view>
+    <view class="setting-item">
+      <view class="setting-left">
+        <text class="setting-icon">🌙</text>
+        <text class="setting-name">深夜提醒</text>
+      </view>
+      <switch checked="{{nightReminder}}" bindchange="toggleNightReminder" color="{{theme.primary}}" />
+    </view>
+    <view class="setting-item" wx:if="{{nightReminder}}">
+      <view class="setting-left">
+        <text class="setting-icon">🕐</text>
+        <text class="setting-name">深夜提醒时间</text>
+      </view>
+      <picker mode="time" value="{{nightReminderTime}}" bindchange="changeNightTime">
+        <view class="time-picker" style="background: {{theme.primaryLight}}; color: {{theme.primaryDark}};">{{nightReminderTime}}</view>
+      </picker>
+    </view>
+  </view>
+
+  <!-- 数据管理 -->
+  <view class="card" style="background: {{theme.card}};">
+    <view class="section-title">💾 数据管理</view>
+    <view class="setting-item danger" bindtap="clearData">
+      <view class="setting-left">
+        <text class="setting-icon">🗑️</text>
+        <text class="setting-name danger-text">清除所有数据</text>
+      </view>
+      <text class="setting-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 关于 -->
+  <view class="card about-card" style="background: {{theme.card}};">
+    <view class="section-title">✨ 关于</view>
+    <view class="about-content">
+      <text class="about-logo">🌱</text>
+      <text class="about-title">好好养自己</text>
+      <text class="about-slogan">当代脆皮年轻人自救指南</text>
+      <text class="about-version">v1.0.0</text>
+    </view>
+  </view>
+
+  <!-- 底部留白 -->
+  <view class="bottom-space"></view>
+</view>

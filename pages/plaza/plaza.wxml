@@ -1,0 +1,119 @@
+<!-- 广场页：弱连接社区，有陪伴感无社交压力 -->
+<view class="page-container" style="background: {{theme.bg}};">
+  <!-- 实时陪伴状态条 -->
+  <view class="companion-bar" style="background: {{theme.card}};">
+    <view class="companion-item" wx:for="{{companionList}}" wx:key="index">
+      <text class="companion-icon">{{item.icon}}</text>
+      <text class="companion-text">{{item.text}}</text>
+    </view>
+  </view>
+
+  <!-- 我加入的小组（专属动态） -->
+  <view class="card my-group-card" wx:if="{{showMyGroups}}" style="background: {{theme.card}};">
+    <view class="section-header">
+      <text class="section-title">🌟 我的小组动态</text>
+      <text class="section-tip">已加入 {{joinedGroups.length}} 个小组</text>
+    </view>
+
+    <!-- 我的小组标签 -->
+    <view class="my-group-tags">
+      <view class="my-group-tag" wx:for="{{groupList}}" wx:key="id" wx:if="{{joinedGroupMap[item.id]}}"
+            style="background: {{theme.primaryLight}}; color: {{theme.primaryDark}};">
+        <text class="tag-icon">{{item.icon}}</text>
+        <text class="tag-name">{{item.name}}</text>
+        <text class="tag-leave" catchtap="leaveGroup" data-id="{{item.id}}">✕</text>
+      </view>
+    </view>
+
+    <!-- 小组专属feed -->
+    <view class="my-feed-list" wx:if="{{myGroupFeed.length > 0}}">
+      <view class="feed-item" wx:for="{{myGroupFeed}}" wx:key="index">
+        <view class="feed-top">
+          <view class="feed-avatar" style="background: {{theme.primaryLight}};">
+            <text class="feed-avatar-icon">{{item.icon}}</text>
+          </view>
+          <view class="feed-info">
+            <text class="feed-name">{{item.nickname}}</text>
+            <text class="feed-days" style="color: {{theme.primaryDark}};">已坚持 {{item.days}} 天</text>
+          </view>
+          <text class="feed-time">{{item.timeText}}</text>
+        </view>
+        <text class="feed-text">{{item.text}}</text>
+      </view>
+    </view>
+    <view class="feed-empty" wx:else>
+      <text class="empty-text">小组暂时没有新动态，先去打卡吧～</text>
+    </view>
+  </view>
+
+  <!-- 打卡广场（匿名信息流） -->
+  <view class="card" style="background: {{theme.card}};">
+    <view class="section-title">📸 匿名广场</view>
+    <view class="checkin-list">
+      <view class="checkin-item" wx:for="{{checkinList}}" wx:key="index">
+        <view class="checkin-header">
+          <view class="checkin-avatar" style="background: {{theme.primaryLight}};">
+            <text class="checkin-avatar-icon">{{item.icon}}</text>
+          </view>
+          <view class="checkin-info">
+            <view class="checkin-name-row">
+              <text class="checkin-name">{{item.nickname}}</text>
+              <text class="checkin-days" style="color: {{theme.primaryDark}};">已坚持 {{item.days}} 天</text>
+            </view>
+            <text class="checkin-time">{{item.timeText}}</text>
+          </view>
+        </view>
+        <text class="checkin-text">{{item.text}}</text>
+      </view>
+    </view>
+    <view class="plaza-hint">仅浏览，不点赞不评论，安静陪伴</view>
+  </view>
+
+  <!-- 主题小组 -->
+  <view class="card" style="background: {{theme.card}};">
+    <view class="section-header">
+      <text class="section-title">👥 主题小组</text>
+      <text class="section-tip" wx:if="{{joinedGroups.length > 0}}">已加入 {{joinedGroups.length}} 个</text>
+    </view>
+
+    <view class="group-list">
+      <view class="group-item" wx:for="{{groupList}}" wx:key="id">
+        <view class="group-icon-wrap" style="background: {{theme.primaryLight}};">
+          <text class="group-icon">{{item.icon}}</text>
+        </view>
+        <view class="group-info">
+          <view class="group-name-row">
+            <text class="group-name">{{item.name}}</text>
+            <text class="group-count">{{item.count}} 人</text>
+          </view>
+          <text class="group-desc">{{item.desc}}</text>
+        </view>
+        <!-- 已加入：显示退出按钮 -->
+        <view class="group-btn joined" wx:if="{{joinedGroupMap[item.id]}}"
+              bindtap="leaveGroup" data-id="{{item.id}}"
+              style="background: {{theme.primaryLight}}; color: {{theme.primaryDark}}; border-color: {{theme.primary}};">
+          <text>✓ 已加入</text>
+        </view>
+        <!-- 未加入：显示加入按钮 -->
+        <view class="group-btn" wx:else
+              bindtap="joinGroup" data-id="{{item.id}}"
+              style="background: {{theme.primary}}; color: #fff;">
+          <text>+ 加入</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="group-hint">
+      <text>💡 加入后可看到该小组成员的打卡动态，随时可退出</text>
+    </view>
+  </view>
+
+  <!-- 每日金句 -->
+  <view class="card quote-card" style="background: {{theme.card}};">
+    <text class="quote-mark">"</text>
+    <text class="quote-text">{{quote}}</text>
+    <text class="quote-mark bottom">"</text>
+  </view>
+
+  <view class="bottom-space"></view>
+</view>

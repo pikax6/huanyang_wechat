@@ -1,0 +1,179 @@
+<!-- 场景急救包 - 丰富交互版 -->
+<view class="page-container" style="background: {{theme.bg}};">
+  <!-- 场景头部 -->
+  <view class="rescue-header" style="background: {{scenario.color}}22;">
+    <view class="header-icon" style="background: {{scenario.color}};">{{scenario.icon}}</view>
+    <view class="header-info">
+      <text class="header-title">{{scenario.name}}</text>
+      <text class="header-desc">{{scenario.desc}}</text>
+    </view>
+    <view class="header-count" wx:if="{{useCount > 0}}">
+      <text class="count-num">{{useCount}}</text>
+      <text class="count-label">次急救</text>
+    </view>
+  </view>
+
+  <!-- 模式切换 -->
+  <view class="mode-tabs" style="background: {{theme.card}};">
+    <view class="mode-tab {{currentMode === 'breathing' ? 'active' : ''}}"
+          bindtap="switchMode" data-mode="breathing"
+          style="color: {{currentMode === 'breathing' ? scenario.color : theme.textSecondary}}; border-color: {{currentMode === 'breathing' ? scenario.color : 'transparent'}};">
+      <text class="mode-icon">🌬️</text>
+      <text class="mode-text">深呼吸</text>
+    </view>
+    <view class="mode-tab {{currentMode === 'decision' ? 'active' : ''}}"
+          bindtap="switchMode" data-mode="decision"
+          style="color: {{currentMode === 'decision' ? scenario.color : theme.textSecondary}}; border-color: {{currentMode === 'decision' ? scenario.color : 'transparent'}};">
+      <text class="mode-icon">🤔</text>
+      <text class="mode-text">自问自答</text>
+    </view>
+    <view class="mode-tab {{currentMode === 'action' ? 'active' : ''}}"
+          bindtap="switchMode" data-mode="action"
+          style="color: {{currentMode === 'action' ? scenario.color : theme.textSecondary}}; border-color: {{currentMode === 'action' ? scenario.color : 'transparent'}};">
+      <text class="mode-icon">💡</text>
+      <text class="mode-text">立即行动</text>
+    </view>
+    <view class="mode-tab {{currentMode === 'record' ? 'active' : ''}}"
+          bindtap="switchMode" data-mode="record"
+          style="color: {{currentMode === 'record' ? scenario.color : theme.textSecondary}}; border-color: {{currentMode === 'record' ? scenario.color : 'transparent'}};">
+      <text class="mode-icon">📝</text>
+      <text class="mode-text">记录此刻</text>
+    </view>
+  </view>
+
+  <!-- 内容区 -->
+  <view class="mode-content">
+
+    <!-- ============ 深呼吸 ============ -->
+    <view class="breathing-wrap" wx:if="{{currentMode === 'breathing'}}">
+      <view class="breathing-title">{{breathingConfig.title}}</view>
+      <view class="breathing-subtitle">{{breathingConfig.subtitle}}</view>
+
+      <!-- 呼吸圆环 -->
+      <view class="breath-stage">
+        <view class="breath-circle {{breathingActive ? 'phase-' + breathPhase : ''}}"
+              style="--breath-color: {{scenario.color}};">
+          <view class="breath-circle-inner">
+            <text class="breath-phase-name" wx:if="{{breathingActive}}">{{breathPhaseName}}</text>
+            <text class="breath-phase-name" wx:else>点击开始</text>
+            <text class="breath-count" wx:if="{{breathingActive}}">{{breathCountdown}}</text>
+            <text class="breath-round" wx:if="{{breathingActive}}">第 {{currentRound}}/{{breathingConfig.rounds}} 轮</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 提示文案 -->
+      <view class="breath-hint" wx:if="{{breathingActive && breathHint}}">{{breathHint}}</view>
+      <view class="breath-hint" wx:else>跟着圆环节奏，吸气-屏息-呼气</view>
+
+      <!-- 控制按钮 -->
+      <view class="breath-controls">
+        <view class="breath-btn start" wx:if="{{!breathingActive}}"
+              bindtap="startBreathing" style="background: {{scenario.color}};">
+          开始呼吸
+        </view>
+        <view class="breath-btn stop" wx:if="{{breathingActive}}"
+              bindtap="stopBreathing" style="color: {{scenario.color}}; border-color: {{scenario.color}};">
+          停止
+        </view>
+      </view>
+
+      <!-- 完成提示 -->
+      <view class="breath-done" wx:if="{{breathingDone}}">
+        <text class="done-emoji">🌈</text>
+        <text class="done-text">呼吸完成，感觉好点了吗？</text>
+      </view>
+    </view>
+
+    <!-- ============ 决策树 ============ -->
+    <view class="decision-wrap" wx:if="{{currentMode === 'decision'}}">
+      <view class="decision-title">{{decisionConfig.title}}</view>
+
+      <!-- 问题节点 -->
+      <view class="decision-card" wx:if="{{currentNode.question}}" style="background: {{theme.card}};">
+        <text class="decision-question">{{currentNode.question}}</text>
+        <view class="decision-options">
+          <view class="decision-option" wx:for="{{currentNode.options}}" wx:key="text"
+                bindtap="chooseOption" data-next="{{item.next}}"
+                style="border-color: {{scenario.color}}44;">
+            <text class="option-text">{{item.text}}</text>
+            <text class="option-arrow">›</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 答案节点 -->
+      <view class="decision-card answer" wx:if="{{currentNode.answer}}" style="background: {{theme.card}};">
+        <text class="decision-answer">{{currentNode.answer}}</text>
+        <view class="answer-actions">
+          <view class="answer-btn restart" bindtap="restartDecision" style="color: {{scenario.color}}; border-color: {{scenario.color}};">
+            重新开始
+          </view>
+          <view class="answer-btn done" bindtap="completeRescue" style="background: {{scenario.color}};">
+            我好了
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- ============ 立即行动 ============ -->
+    <view class="action-wrap" wx:if="{{currentMode === 'action'}}">
+      <view class="action-title">试试这几个小动作，立刻见效</view>
+      <view class="action-list">
+        <view class="action-card" wx:for="{{actionList}}" wx:key="text"
+              style="background: {{theme.card}};">
+          <view class="action-icon" style="background: {{scenario.color}}22;">{{item.icon}}</view>
+          <text class="action-text">{{item.text}}</text>
+        </view>
+      </view>
+      <view class="action-refresh" bindtap="refreshActions" style="color: {{scenario.color}};">
+        🔄 换一批建议
+      </view>
+      <view class="action-done-btn" bindtap="completeRescue" style="background: {{scenario.color}};">
+        我试过了，感觉好点
+      </view>
+    </view>
+
+    <!-- ============ 记录此刻 ============ -->
+    <view class="record-wrap" wx:if="{{currentMode === 'record'}}">
+      <view class="record-title">{{scenario.recordPrompt}}</view>
+
+      <!-- 心情选择 -->
+      <view class="mood-picker">
+        <view class="mood-item {{selectedMood === item ? 'selected' : ''}}"
+              wx:for="{{moodOptions}}" wx:key="*this"
+              bindtap="selectMood" data-mood="{{item}}"
+              style="border-color: {{selectedMood === item ? scenario.color : 'transparent'}};">
+          <text class="mood-emoji">{{item}}</text>
+        </view>
+      </view>
+
+      <!-- 文本输入 -->
+      <textarea class="record-input" placeholder="把脑子里的东西倒出来..."
+                value="{{recordText}}" bindinput="onRecordInput" maxlength="200"
+                style="background: {{theme.card}}; color: {{theme.textPrimary}};"
+                placeholder-style="color: {{theme.textLight}};" />
+
+      <text class="record-count">{{recordText.length}}/200</text>
+
+      <!-- 历史记录 -->
+      <view class="record-history" wx:if="{{historyList.length > 0}}">
+        <view class="history-title">📝 之前的记录</view>
+        <view class="history-item" wx:for="{{historyList}}" wx:key="time"
+              style="background: {{theme.card}};">
+          <view class="history-top">
+            <text class="history-mood">{{item.mood}}</text>
+            <text class="history-time">{{item.timeText}}</text>
+          </view>
+          <text class="history-text" wx:if="{{item.text}}">{{item.text}}</text>
+        </view>
+      </view>
+
+      <view class="record-save" bindtap="saveRecord" style="background: {{scenario.color}};">
+        记下来，放过自己
+      </view>
+    </view>
+  </view>
+
+  <view class="bottom-space"></view>
+</view>

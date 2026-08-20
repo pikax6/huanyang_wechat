@@ -1,0 +1,46 @@
+{
+  "pages": [
+    "pages/today/today",
+    "pages/rehab/rehab",
+    "pages/mood/mood",
+    "pages/plaza/plaza",
+    "pages/settings/settings",
+    "pages/rescue/rescue",
+    "pages/shop/shop"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#FAF8F5",
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "还阳计划",
+    "backgroundColor": "#FAF8F5",
+    "backgroundTextStyle": "dark",
+    "enablePullDownRefresh": false
+  },
+  "tabBar": {
+    "color": "#B8B8B8",
+    "selectedColor": "#7EC8A0",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/today/today",
+        "text": "今日"
+      },
+      {
+        "pagePath": "pages/rehab/rehab",
+        "text": "还阳"
+      },
+      {
+        "pagePath": "pages/mood/mood",
+        "text": "心情"
+      },
+      {
+        "pagePath": "pages/plaza/plaza",
+        "text": "广场"
+      }
+    ]
+  },
+  "sitemapLocation": "sitemap.json",
+  "style": "v2",
+  "lazyCodeLoading": "requiredComponents"
+}
