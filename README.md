@@ -38,5 +38,5 @@
 
 ## 说明
 
-- `软著材料/`、`project.private.config.json` 等隐私/本地配置不在版本库内（见 `.gitignore`）。
+- 隐私/本地配置不在版本库内（见 `.gitignore`）。
 - 详细上传与文件标注见 [`GitHub上传说明.md`](./GitHub上传说明.md)。
